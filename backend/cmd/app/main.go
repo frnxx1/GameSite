@@ -18,7 +18,7 @@ import (
 func handleFunc() *gin.Engine {
 	router := gin.Default()
 	router.GET("/", gm.ViewIndex)
-
+	router.POST("/", gm.TestFunc)
 	router.POST("/:name/PayItem", func(ctx *gin.Context) {
 		item := gm.PayItem(ctx)
 		ctx.JSON(200,gin.H{"Product": item.Item})
@@ -47,5 +47,5 @@ func main() {
 		log.Fatal(err)
 	}
 	r := handleFunc()
-	r.Run("localhost:8080")
+	r.Run("localhost:3001")
 }
