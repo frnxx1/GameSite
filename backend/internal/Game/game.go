@@ -65,3 +65,12 @@ func PayItem(ctx *gin.Context) gm.Games{
 	}
 	return data
 }
+
+func TestFunc(ctx *gin.Context){
+	data := gm.Games{
+		Name: "123",
+		Description: "123",
+		Image: "123",
+	}
+	ctx.JSON(200,gin.H{"game":data})
+}
