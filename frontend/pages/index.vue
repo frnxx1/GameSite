@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-const { data: game } = await useFetch('/api/count')
+const { data: game } = await useFetch('localhost:3000')
 
 </script>
 

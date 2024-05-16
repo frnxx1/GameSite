@@ -4,7 +4,7 @@
 
 <template>
  <!-- <v-container class="bg-surface-variant"> -->
-    <v-row no-gutters style="gap:20px">
+    <v-row no-gutters>
       <v-col
         v-for="n in 4"
         :key="n"

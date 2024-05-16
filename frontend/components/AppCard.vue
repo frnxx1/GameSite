@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import{ ref } from 'vue'
 
-    const loading = ref(false)
+   const loading = ref(false)
 
    const reserve = function () {
       loading.value = true
