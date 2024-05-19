@@ -3,6 +3,7 @@ package main
 import (
 	db "GameSite/internal/DB"
 	gm "GameSite/internal/Game"
+	md "GameSite/internal/model"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -17,8 +18,19 @@ import (
 
 func handleFunc() *gin.Engine {
 	router := gin.Default()
-	router.GET("/", gm.ViewIndex)
-	router.POST("/", gm.TestFunc)
+	router.GET("/1", gm.ViewIndex)
+	router.POST("/", func(ctx *gin.Context) {
+		data := md.Games{
+			Name: "1223",
+			Description: "123",
+			Image: "123",
+		}
+
+		if err := ctx.ShouldBindJSON(&data); err != nil {
+			ctx.JSON(404, err)
+		}
+		ctx.JSON(200,data)
+	})
 	router.POST("/:name/PayItem", func(ctx *gin.Context) {
 		item := gm.PayItem(ctx)
 		ctx.JSON(200,gin.H{"Product": item.Item})
@@ -47,5 +59,5 @@ func main() {
 		log.Fatal(err)
 	}
 	r := handleFunc()
-	r.Run("localhost:3001")
+	r.Run(":3001")
 }

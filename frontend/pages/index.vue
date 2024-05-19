@@ -1,6 +1,16 @@
 <script setup lang="ts">
 
-const { data: game } = await useFetch('localhost:3000')
+const { data: game } = await useFetch('http://localhost:3001', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: { 
+          Name: ``,
+          Description: ``,
+          Image: ``, 
+        }
+        })
 
 </script>
 
