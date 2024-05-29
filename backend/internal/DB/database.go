@@ -3,10 +3,19 @@ package GameSite
 import (
 	"fmt"
 	"log"
-	model "GameSite/internal/model"
+	md "GameSite/internal/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
 )
+
+type User struct {
+	gorm.Model
+	ID       int `gorm:"primaryKey"`
+	Name     string 
+	Email    string `json:"email" binding:"required" gorm:"unique"`
+	Password string `json:"password" binding:"required"`
+}
 
 var GlobalDB *gorm.DB
 
@@ -26,7 +35,7 @@ func InitDatabase() (err error) {
 	if err != nil {
 		return err
 	}
-	err = GlobalDB.AutoMigrate(model.Games{})
+	err = GlobalDB.AutoMigrate(&md.Games{},&User{})
 	if err != nil {
 		log.Fatal("Error connecting to the database...", err)
 	}
