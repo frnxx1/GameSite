@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <AppAside></AppAside>
+    <!-- <AppAside></AppAside> -->
     <AppHeader></AppHeader>
     <v-main
       class="d-flex column"

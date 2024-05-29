@@ -9,6 +9,9 @@ export default defineNuxtConfig({
 	},
 	vuetifyOptions: {
 	  /* vuetify options */
+	  theme: {
+		defaultTheme: 'dark'
+	 }
 	}
  },
  css: ['~/assets/styles/global.scss']

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import{ ref } from 'vue'
 
-   const loading = ref(false)
+const { game } = defineProps(['game'])
+const loading = ref(false)
 
-   const reserve = function () {
-      loading.value = true
-      setTimeout(() => (loading.value = false), 2000)
-    }
+const reserve = function () {
+	loading.value = true
+	setTimeout(() => (loading.value = false), 2000)
+	}
 
 </script>
 
@@ -15,12 +16,13 @@ import{ ref } from 'vue'
     :disabled="loading"
     :loading="loading"
     class="mx-auto my-12"
-    max-width="374"
+    max-width="340"
+	 min-width="250"
   >
     <template v-slot:loader="{ isActive }">
       <v-progress-linear
         :active="isActive"
-        color="deep-purple"
+        color="orange-darken-1"
         height="4"
         indeterminate
       ></v-progress-linear>
@@ -33,7 +35,7 @@ import{ ref } from 'vue'
     ></v-img>
 
     <v-card-item>
-      <v-card-title>CS GO</v-card-title>
+      <v-card-title>{{game.name}}</v-card-title>
 
       <v-card-subtitle>
         <span class="me-1">Шутер</span>
@@ -70,13 +72,13 @@ import{ ref } from 'vue'
 
     <v-card-actions>
       <v-btn
-        color="deep-purple-lighten-2"
+        color="orange-darken-1"
         text="Купить"
       	variant="elevated"
         @click="reserve"
       ></v-btn>
 		<v-btn
-        color="deep-purple-lighten-2"
+        color="orange-darken-1"
         text="Подробнее" 
 		  border
         @click="reserve"

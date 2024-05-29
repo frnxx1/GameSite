@@ -39,7 +39,7 @@ const onClick = function () {
 
     <div class="search-block__filter">
 		<ul v-for="filter in filters" :key="filter.title">
-			<li><v-chip color="secondary" variant="flat" :value="filter.value">{{ filter.title }}</v-chip></li>
+			<li><v-chip color="orange-darken-1" variant="outlined" :value="filter.value" rounded="sm" >{{ filter.title }}</v-chip></li>
 		</ul>
     </div>
   </div>

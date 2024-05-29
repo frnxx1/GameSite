@@ -1,23 +1,31 @@
 <script setup lang="ts">
+const {data: games} = await useFetch('https://api.igdb.com/v4/games', {
+	method: 'POST',
+	headers: {
+	// 'Content-Type': 'application/json',
+	'Client-ID': 'veftuzgvr6vae5133lstqxkz1rxy2u',
+	Authorization: 'Bearer o6cnuwr9w0ladumfekz6fosygi55g8',
+	},
+	body: 'fields *;'
+
+})
+
+console.log(games.value)
 
 </script>
 
 <template>
- <!-- <v-container class="bg-surface-variant"> -->
-    <v-row no-gutters>
+    <v-row>
       <v-col
-        v-for="n in 4"
-        :key="n"
-        cols="12"
-        sm="3"
+        v-for="n in 4"	  
       >
-		<AppCard />
-        <!-- <v-sheet class="ma-2 pa-2">
-          One of three columns
-        </v-sheet> -->
+		<AppCard  
+		v-for="game in games"
+		:game="game"	
+		/>
+
       </v-col>
     </v-row>
-  <!-- </v-container> -->
 </template>
 
 <style scoped>
