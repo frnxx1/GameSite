@@ -3,7 +3,7 @@ package main
 import (
 	db "GameSite/internal/DB"
 	gm "GameSite/internal/Game"
-	md "GameSite/internal/model"
+	/* md "GameSite/internal/model" */
 	"GameSite/internal/jwt/controllers"
 	"GameSite/internal/jwt/middleware"
 	"log"
@@ -20,15 +20,6 @@ import (
 
 func handleFunc() *gin.Engine {
 	r := gin.Default()
-	r.GET("/", func(ctx *gin.Context) {
-		data := md.Games{
-			Name:        "123",
-			Description: "123",
-			Image:       "123",
-		}
-		
-		ctx.JSON(200, data)
-	})
 	
 	r.POST("/:name/PayItem", func(ctx *gin.Context) {
 		item := gm.PayItem(ctx)
@@ -51,12 +42,22 @@ func handleFunc() *gin.Engine {
 
 	api := r.Group("/api")
 	{
-		// Create a new group for the public routes
 		public := api.Group("/public")
 		{
-			// Add the login route
+			r.Use(func(c *gin.Context) {
+				c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+				c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+				c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+				c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+			  
+				if c.Request.Method == "OPTIONS" {
+				 c.AbortWithStatus(204)
+				 return
+				}
+			  
+				c.Next()
+			   })
 			public.POST("/login", controllers.Login)
-			// Add the signup route
 			public.POST("/signup", func(ctx *gin.Context) {
 				err := controllers.Signup(ctx)
 				if err != nil {
@@ -66,10 +67,9 @@ func handleFunc() *gin.Engine {
 				}
 			})
 		}
-		// Add the signup route
 		protected := api.Group("/protected").Use(middleware.AuthZ())
 		{
-			// Add the profile route
+			
 			protected.GET("/profile", controllers.Profile)
 		}
 	}

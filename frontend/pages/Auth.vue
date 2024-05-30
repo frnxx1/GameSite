@@ -23,13 +23,13 @@
   const submit = handleSubmit(values => {
    //  alert(JSON.stringify(values, null, 2))
 
-	const {data: responce} = useFetch('http://0.0.0.0:3001/api/public/login', {
+	const {data: responce} = useFetch('http://localhost:3001/api/public/login', {
 	method: 'POST',
-	body: values
+	body: values    
 })
 	console.log(values);
-	// resetForm()
-	// router.push("/")
+	 resetForm()
+	 router.push("/")
   })
 
 </script>
