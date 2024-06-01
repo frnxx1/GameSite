@@ -2,7 +2,6 @@
 const {data: games} = await useFetch('https://api.igdb.com/v4/games', {
 	method: 'POST',
 	headers: {
-	// 'Content-Type': 'application/json',
 	'Client-ID': 'veftuzgvr6vae5133lstqxkz1rxy2u',
 	Authorization: 'Bearer o6cnuwr9w0ladumfekz6fosygi55g8',
 	},
@@ -17,13 +16,17 @@ console.log(games.value)
 <template>
     <v-row>
       <v-col
-        v-for="n in 4"	  
+		v-for="game in games"
+		cols="12"
+		lg="3"
+		md="4"
+      sm="6"
+		xs="12"
+		:key="game.id"
       >
 		<AppCard  
-		v-for="game in games"
 		:game="game"	
 		/>
-
       </v-col>
     </v-row>
 </template>
@@ -32,4 +35,3 @@ console.log(games.value)
 
 </style>
 
-<!-- <AppCard /> -->

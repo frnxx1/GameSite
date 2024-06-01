@@ -15,8 +15,7 @@ const reserve = function () {
   <v-card
     :disabled="loading"
     :loading="loading"
-    class="mx-auto my-12"
-    max-width="340"
+	height="100%"
 	 min-width="250"
   >
     <template v-slot:loader="{ isActive }">
@@ -67,7 +66,7 @@ const reserve = function () {
         </div>
       </v-row>
 
-		<div class="my-4">Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.</div>
+		<div class="my-4">{{game.summary}}</div>
     </v-card-text>
 
     <v-card-actions>
