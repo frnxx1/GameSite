@@ -72,10 +72,10 @@ func PayItem(ctx *gin.Context) gm.Games {
 	return data
 }
 
-func TestFunc() gm.Games {
-	var data gm.Games
+func TestFunc() []gin.H {
+
 	config := rawg.Config{
-		ApiKey:   "1e5f1a0a5590404f950a65bcdeeb19d4", // Your personal API key (see https://rawg.io/apidocs)
+		ApiKey:   "1e5f1a0a5590404f950a65bcdeeb19d4",
 		Language: "ru",
 		Rps:      5,
 	}
@@ -92,13 +92,15 @@ func TestFunc() gm.Games {
 	if err != nil {
 		fmt.Println(err)
 	}
+	var results []gin.H
 	for _, i := range game {
-		data = gm.Games{
-			Name:        i.Name,
-			Description: i.Slug,
-			Image:       i.ImageBackground,
+		result := gin.H{
+			"name":        i.Name,
+			"description": i.Slug,
+			"image":       i.ImageBackground,
 		}
+		results = append(results, result)
 	}
-	return data
+	return results
 
 }
