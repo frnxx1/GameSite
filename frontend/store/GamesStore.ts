@@ -6,20 +6,9 @@ export const useGamesStore = defineStore('gamesStore', () => {
 	// const games = ref([])
 
 	const getGames = async () => {
-
-		//Миша, ниже ссылку замени на http://localhost:3001
-		const { data: responce } = await useFetch("https://jsonplaceholder.typicode.com/todos/", {
-			// method: "POST",
-			// headers: {
-			// 	"Client-ID": "veftuzgvr6vae5133lstqxkz1rxy2u",
-			// 	Authorization: "Bearer o6cnuwr9w0ladumfekz6fosygi55g8",
-			// },
-			// body: "fields *;",
-		})
-		// games.value = responce.value
+		const { data: responce } = await useFetch("http://localhost:3001")
 		return responce.value
 	}
-
 
 	return { 
 		getGames
