@@ -20,7 +20,6 @@ export const useGamesStore = defineStore('gamesStore', () => {
 
 
 	return { 
-		// games,
 		getGames
 	}
  })
