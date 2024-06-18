@@ -20,6 +20,11 @@ import (
 
 func handleFunc() *gin.Engine {
 	r := gin.Default()
+
+	r.GET("/",func(ctx *gin.Context) {
+		data := gm.TestFunc()
+		ctx.JSON(200,data)
+	})
 	
 	r.POST("/:name/PayItem", func(ctx *gin.Context) {
 		item := gm.PayItem(ctx)
