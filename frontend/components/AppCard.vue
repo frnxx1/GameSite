@@ -30,7 +30,7 @@ const reserve = function () {
 
     <v-img
       height="250"
-      src="/img/csgo.jpg"
+      :src="game.image"
       cover
     ></v-img>
 
