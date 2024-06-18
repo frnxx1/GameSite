@@ -3,9 +3,14 @@ package GameSite
 import (
 	db "GameSite/internal/DB"
 	gm "GameSite/internal/model"
+	"context"
 	"errors"
+	"fmt"
 	"log"
+	"net/http"
+	"time"
 
+	"github.com/dimuska139/rawg-sdk-go/v3"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -67,16 +72,33 @@ func PayItem(ctx *gin.Context) gm.Games {
 	return data
 }
 
-func TestFunc(ctx *gin.Context) {
-	data := gm.Games{
-		Name:        "123",
-		Description: "123",
-		Image:       "123",
+func TestFunc() gm.Games {
+	var data gm.Games
+	config := rawg.Config{
+		ApiKey:   "1e5f1a0a5590404f950a65bcdeeb19d4", // Your personal API key (see https://rawg.io/apidocs)
+		Language: "ru",
+		Rps:      5,
 	}
-	
-	if err := ctx.ShouldBindJSON(&data); err != nil {
-		ctx.JSON(404, gin.H{"error": err.Error()})
+	client := rawg.NewClient(http.DefaultClient, &config)
+
+	filter := rawg.NewGamesFilter().
+		SetSearch("").
+		SetPage(1).
+		SetPageSize(5)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))
+	defer cancel()
+	game, _, err := client.GetGames(ctx, filter)
+	if err != nil {
+		fmt.Println(err)
 	}
-	
-	ctx.JSON(200, data)
+	for _, i := range game {
+		data = gm.Games{
+			Name:        i.Name,
+			Description: i.Slug,
+			Image:       i.ImageBackground,
+		}
+	}
+	return data
+
 }
