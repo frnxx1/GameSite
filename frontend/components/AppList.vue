@@ -1,20 +1,16 @@
 <script setup lang="ts">
-const {data: games} = await useFetch('https://api.igdb.com/v4/games', {
-	method: 'POST',
-	headers: {
-	'Client-ID': 'veftuzgvr6vae5133lstqxkz1rxy2u',
-	Authorization: 'Bearer o6cnuwr9w0ladumfekz6fosygi55g8',
-	},
-	body: 'fields *;'
+import { useGamesStore } from '../store/GamesStore'
+const gamesStore = useGamesStore()
 
-})
+const { data: games } = await useAsyncData('games', () => gamesStore.getGames())
 
-console.log(games.value)
+console.log(games);
+
 
 </script>
 
 <template>
-    <v-row>
+    <v-row class="mt-2 mb-2">
       <v-col
 		v-for="game in games"
 		cols="12"

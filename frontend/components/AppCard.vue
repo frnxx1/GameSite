@@ -15,7 +15,8 @@ const reserve = function () {
   <v-card
     :disabled="loading"
     :loading="loading"
-	height="100%"
+		height="100%"
+		
 	 min-width="250"
   >
     <template v-slot:loader="{ isActive }">
@@ -69,7 +70,7 @@ const reserve = function () {
 		<div class="my-4">{{game.summary}}</div>
     </v-card-text>
 
-    <v-card-actions>
+    <v-card-actions class="pa-4">
       <v-btn
         color="orange-darken-1"
         text="Купить"
