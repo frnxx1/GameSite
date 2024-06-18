@@ -10,7 +10,9 @@ console.log(games);
 </script>
 
 <template>
-    <v-row class="mt-2 mb-2">
+
+	<h2>{{games}}</h2>
+    <!-- <v-row class="mt-2 mb-2">
       <v-col
 		v-for="game in games"
 		cols="12"
@@ -24,7 +26,7 @@ console.log(games);
 		:game="game"	
 		/>
       </v-col>
-    </v-row>
+    </v-row> -->
 </template>
 
 <style scoped>

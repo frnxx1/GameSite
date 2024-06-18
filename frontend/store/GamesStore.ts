@@ -6,13 +6,15 @@ export const useGamesStore = defineStore('gamesStore', () => {
 	// const games = ref([])
 
 	const getGames = async () => {
-		const { data: responce } = await useFetch("https://api.igdb.com/v4/games", {
-			method: "POST",
-			headers: {
-				"Client-ID": "veftuzgvr6vae5133lstqxkz1rxy2u",
-				Authorization: "Bearer o6cnuwr9w0ladumfekz6fosygi55g8",
-			},
-			body: "fields *;",
+
+		//Миша, ниже ссылку замени на http://localhost:3001
+		const { data: responce } = await useFetch("https://jsonplaceholder.typicode.com/todos/", {
+			// method: "POST",
+			// headers: {
+			// 	"Client-ID": "veftuzgvr6vae5133lstqxkz1rxy2u",
+			// 	Authorization: "Bearer o6cnuwr9w0ladumfekz6fosygi55g8",
+			// },
+			// body: "fields *;",
 		})
 		// games.value = responce.value
 		return responce.value
