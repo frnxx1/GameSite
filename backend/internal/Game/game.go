@@ -73,7 +73,6 @@ func PayItem(ctx *gin.Context) gm.Games {
 }
 
 func TestFunc() []gin.H {
-
 	config := rawg.Config{
 		ApiKey:   "1e5f1a0a5590404f950a65bcdeeb19d4",
 		Language: "ru",
@@ -84,20 +83,27 @@ func TestFunc() []gin.H {
 	filter := rawg.NewGamesFilter().
 		SetSearch("").
 		SetPage(1).
-		SetPageSize(5)
+		SetPageSize(20)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))
 	defer cancel()
 	game, _, err := client.GetGames(ctx, filter)
+
 	if err != nil {
 		fmt.Println(err)
 	}
 	var results []gin.H
 	for _, i := range game {
+		desc,err := client.GetGame(ctx,i.ID)
+		if err != nil {
+			log.Println(err)
+		}
 		result := gin.H{
 			"name":        i.Name,
-			"description": i.Slug,
+			"genre":       i.Genres,
 			"image":       i.ImageBackground,
+			"rating":      i.Rating,
+			"description": desc.Description,
 		}
 		results = append(results, result)
 	}
