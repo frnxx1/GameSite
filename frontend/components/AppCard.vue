@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import{ ref } from 'vue'
-
 const { game } = defineProps(['game'])
 const loading = ref(false)
 
@@ -37,8 +36,8 @@ const reserve = function () {
     <v-card-item>
       <v-card-title>{{game.name}}</v-card-title>
 
-      <v-card-subtitle>
-        <span class="me-1">Шутер</span>
+      <v-card-subtitle >
+        <span v-for="gen in game.genre" class="me-1">{{ gen.name }}</span>
 
         <v-icon
           color="error"
@@ -54,7 +53,7 @@ const reserve = function () {
         class="mx-0"
       >
         <v-rating
-          :model-value="4.5"
+          :model-value="game.rating"
           color="amber"
           density="compact"
           size="small"
@@ -63,7 +62,7 @@ const reserve = function () {
         ></v-rating>
 
         <div class="text-grey ms-4">
-          4.5 (413)
+          {{game.rating}}
         </div>
       </v-row>
 

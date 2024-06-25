@@ -11,7 +11,7 @@ console.log(games);
 
 <template>
 
-	<h2>{{games}}</h2>
+	<!-- <h2>{{games}}</h2> -->
     <v-row class="mt-2 mb-2">
       <v-col
 		v-for="game in games"
