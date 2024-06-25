@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/dimuska139/rawg-sdk-go/v3"
@@ -72,17 +73,20 @@ func PayItem(ctx *gin.Context) gm.Games {
 	return data
 }
 
-func TestFunc() []gin.H {
+func TestFunc(num string) []gin.H {
 	config := rawg.Config{
 		ApiKey:   "1e5f1a0a5590404f950a65bcdeeb19d4",
 		Language: "ru",
 		Rps:      5,
 	}
 	client := rawg.NewClient(http.DefaultClient, &config)
-
+	page,err := strconv.Atoi(num)
+	if err != nil {
+		log.Println(err)
+	}
 	filter := rawg.NewGamesFilter().
 		SetSearch("").
-		SetPage(1).
+		SetPage(page).
 		SetPageSize(20)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))

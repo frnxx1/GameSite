@@ -21,8 +21,8 @@ import (
 func handleFunc() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("/",func(ctx *gin.Context) {
-		data := gm.TestFunc()
+	r.GET("/:page",func(ctx *gin.Context) {
+		data := gm.TestFunc(ctx.Param("page"))
 		ctx.JSON(200,data)
 	})
 	
