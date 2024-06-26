@@ -73,7 +73,7 @@ func PayItem(ctx *gin.Context) gm.Games {
 	return data
 }
 
-func TestFunc(num string) []gin.H {
+func TestFunc(num,perNum string) []gin.H {
 	config := rawg.Config{
 		ApiKey:   "1e5f1a0a5590404f950a65bcdeeb19d4",
 		Language: "ru",
@@ -84,10 +84,14 @@ func TestFunc(num string) []gin.H {
 	if err != nil {
 		log.Println(err)
 	}
+	perPage,err := strconv.Atoi(perNum)
+	if err != nil {
+		log.Println(err)
+	}
 	filter := rawg.NewGamesFilter().
 		SetSearch("").
 		SetPage(page).
-		SetPageSize(20)
+		SetPageSize(perPage)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))
 	defer cancel()

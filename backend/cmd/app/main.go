@@ -21,8 +21,10 @@ import (
 func handleFunc() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("/:page",func(ctx *gin.Context) {
-		data := gm.TestFunc(ctx.Param("page"))
+	r.GET("/",func(ctx *gin.Context) {
+		page := ctx.DefaultQuery("page", "1")
+        perPage := ctx.DefaultQuery("perPage", "20")
+		data := gm.TestFunc(page, perPage)
 		ctx.JSON(200,data)
 	})
 	
