@@ -21,6 +21,20 @@ import (
 func handleFunc() *gin.Engine {
 	r := gin.Default()
 
+	r.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	  
+		if c.Request.Method == "OPTIONS" {
+		 c.AbortWithStatus(204)
+		 return
+		}
+	  
+		c.Next()
+	   })
+
 	r.GET("/",func(ctx *gin.Context) {
 		page := ctx.DefaultQuery("page", "1")
         perPage := ctx.DefaultQuery("perPage", "20")
@@ -51,19 +65,7 @@ func handleFunc() *gin.Engine {
 	{
 		public := api.Group("/public")
 		{
-			r.Use(func(c *gin.Context) {
-				c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-				c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-				c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-				c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-			  
-				if c.Request.Method == "OPTIONS" {
-				 c.AbortWithStatus(204)
-				 return
-				}
-			  
-				c.Next()
-			   })
+			
 			public.POST("/login", controllers.Login)
 			public.POST("/signup", func(ctx *gin.Context) {
 				err := controllers.Signup(ctx)
