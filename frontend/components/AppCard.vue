@@ -18,14 +18,14 @@ const reserve = function () {
 		
 	 min-width="250"
   >
-    <template v-slot:loader="{ isActive }">
+    <!-- <template v-slot:loader="{ isActive }">
       <v-progress-linear
         :active="isActive"
         color="orange-darken-1"
         height="4"
         indeterminate
       ></v-progress-linear>
-    </template>
+    </template> -->
 
     <v-img
       height="250"
