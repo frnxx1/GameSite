@@ -3,11 +3,14 @@ package main
 import (
 	db "GameSite/internal/DB"
 	gm "GameSite/internal/Game"
+	"net/http"
+
 	/* md "GameSite/internal/model" */
 	"GameSite/internal/jwt/controllers"
 	"GameSite/internal/jwt/middleware"
 	"log"
 
+	"github.com/dimuska139/rawg-sdk-go/v3"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,28 +23,37 @@ import (
 
 func handleFunc() *gin.Engine {
 	r := gin.Default()
-
+	config := rawg.Config{
+		ApiKey:   "1e5f1a0a5590404f950a65bcdeeb19d4",
+		Language: "ru",
+		Rps:      5,
+	}
+	client := rawg.NewClient(http.DefaultClient, &config)
 	r.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	  
-		if c.Request.Method == "OPTIONS" {
-		 c.AbortWithStatus(204)
-		 return
-		}
-	  
-		c.Next()
-	   })
 
-	r.GET("/",func(ctx *gin.Context) {
-		page := ctx.DefaultQuery("page", "1")
-        perPage := ctx.DefaultQuery("perPage", "20")
-		data := gm.TestFunc(page, perPage)
-		ctx.JSON(200,data)
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
 	})
-	
+
+	r.POST("/:id", func(ctx *gin.Context) {
+		gm.GamePage(ctx.Param("id"),client)
+	})
+
+	r.GET("/", func(ctx *gin.Context) {
+		page := ctx.DefaultQuery("page", "1")
+		perPage := ctx.DefaultQuery("perPage", "20")
+		data := gm.MainPage(page, perPage, client)
+		ctx.JSON(200, data)
+	})
+
 	r.POST("/:name/PayItem", func(ctx *gin.Context) {
 		item := gm.PayItem(ctx)
 		ctx.JSON(200, gin.H{"Product": item})
@@ -65,7 +77,7 @@ func handleFunc() *gin.Engine {
 	{
 		public := api.Group("/public")
 		{
-			
+
 			public.POST("/login", controllers.Login)
 			public.POST("/signup", func(ctx *gin.Context) {
 				err := controllers.Signup(ctx)
@@ -78,7 +90,7 @@ func handleFunc() *gin.Engine {
 		}
 		protected := api.Group("/protected").Use(middleware.AuthZ())
 		{
-			
+
 			protected.GET("/profile", controllers.Profile)
 		}
 	}

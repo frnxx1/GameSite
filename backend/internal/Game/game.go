@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -15,10 +14,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
-
-func ViewIndex(ctx *gin.Context) {
-	ctx.JSON(200, gin.H{"message": "123"})
-}
 
 func PostGameId(ctx *gin.Context, id string) (gm.Games, error) {
 	var gameInfo gm.Games
@@ -73,18 +68,13 @@ func PayItem(ctx *gin.Context) gm.Games {
 	return data
 }
 
-func TestFunc(num,perNum string) []gin.H {
-	config := rawg.Config{
-		ApiKey:   "1e5f1a0a5590404f950a65bcdeeb19d4",
-		Language: "ru",
-		Rps:      5,
-	}
-	client := rawg.NewClient(http.DefaultClient, &config)
-	page,err := strconv.Atoi(num)
+func MainPage(num, perNum string, client *rawg.Client) []gin.H {
+
+	page, err := strconv.Atoi(num)
 	if err != nil {
 		log.Println(err)
 	}
-	perPage,err := strconv.Atoi(perNum)
+	perPage, err := strconv.Atoi(perNum)
 	if err != nil {
 		log.Println(err)
 	}
@@ -102,7 +92,7 @@ func TestFunc(num,perNum string) []gin.H {
 	}
 	var results []gin.H
 	for _, i := range game {
-		desc,err := client.GetGame(ctx,i.ID)
+		desc, err := client.GetGame(ctx, i.ID)
 		if err != nil {
 			log.Println(err)
 		}
@@ -117,4 +107,32 @@ func TestFunc(num,perNum string) []gin.H {
 	}
 	return results
 
+}
+
+func GamePage(id string, client *rawg.Client) []gin.H {
+	gameId, err := strconv.Atoi(id)
+	if err != nil {
+		log.Println(err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))
+	defer cancel()
+
+	var results []gin.H
+
+	desc, err := client.GetGame(ctx, gameId)
+	if err != nil {
+		log.Println(err)
+	}
+	result := gin.H{
+		"name":        desc.Name,
+		"genre":       desc.Genres,
+		"image":       desc.ImageBackground,
+		"rating":      desc.Rating,
+		"description": desc.Description,
+		"image_background":desc.ImageBackgroundAdditional,
+	}
+	results = append(results, result)
+
+	return results
 }
