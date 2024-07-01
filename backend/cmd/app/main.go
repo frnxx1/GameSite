@@ -61,7 +61,7 @@ func handleFunc() *gin.Engine {
 		ctx.JSON(200, data)
 	})
 
-	r.POST("/:name/PayItem", func(ctx *gin.Context) {
+	r.POST("/PayItem/1/:name", func(ctx *gin.Context) {
 		item := gm.PayItem(ctx)
 		ctx.JSON(200, gin.H{"Product": item})
 	})
@@ -71,7 +71,7 @@ func handleFunc() *gin.Engine {
 		ctx.JSON(200, gin.H{"data": data})
 	})
 
-	r.POST("/:name", func(ctx *gin.Context) {
+	r.POST("/1/:name", func(ctx *gin.Context) {
 		name := ctx.Param("name")
 		games, err := gm.PostGameId(ctx, name)
 		if err != nil {
