@@ -44,13 +44,20 @@ func handleFunc() *gin.Engine {
 	})
 
 	r.POST("/:id", func(ctx *gin.Context) {
-		gm.GamePage(ctx.Param("id"),client)
+		game,err := gm.GamePage(ctx.Param("id"),client)
+		if err != nil {
+			ctx.JSON(400,err)
+		}
+		ctx.JSON(200,game)
 	})
 
 	r.GET("/", func(ctx *gin.Context) {
 		page := ctx.DefaultQuery("page", "1")
 		perPage := ctx.DefaultQuery("perPage", "20")
-		data := gm.MainPage(page, perPage, client)
+		data,err := gm.MainPage(page, perPage, client)
+		if err != nil {
+			ctx.JSON(400,err)
+		}
 		ctx.JSON(200, data)
 	})
 

@@ -5,7 +5,6 @@ import (
 	gm "GameSite/internal/model"
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -68,15 +67,15 @@ func PayItem(ctx *gin.Context) gm.Games {
 	return data
 }
 
-func MainPage(num, perNum string, client *rawg.Client) []gin.H {
+func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
 
 	page, err := strconv.Atoi(num)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 	perPage, err := strconv.Atoi(perNum)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 	filter := rawg.NewGamesFilter().
 		SetSearch("").
@@ -88,13 +87,13 @@ func MainPage(num, perNum string, client *rawg.Client) []gin.H {
 	game, _, err := client.GetGames(ctx, filter)
 
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 	var results []gin.H
 	for _, i := range game {
 		desc, err := client.GetGame(ctx, i.ID)
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
 		result := gin.H{
 			"name":        i.Name,
@@ -105,14 +104,14 @@ func MainPage(num, perNum string, client *rawg.Client) []gin.H {
 		}
 		results = append(results, result)
 	}
-	return results
+	return results, nil
 
 }
 
-func GamePage(id string, client *rawg.Client) []gin.H {
+func GamePage(id string, client *rawg.Client) ([]gin.H, error) {
 	gameId, err := strconv.Atoi(id)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))
@@ -122,17 +121,17 @@ func GamePage(id string, client *rawg.Client) []gin.H {
 
 	desc, err := client.GetGame(ctx, gameId)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 	result := gin.H{
-		"name":        desc.Name,
-		"genre":       desc.Genres,
-		"image":       desc.ImageBackground,
-		"rating":      desc.Rating,
-		"description": desc.Description,
-		"image_background":desc.ImageBackgroundAdditional,
+		"name":             desc.Name,
+		"genre":            desc.Genres,
+		"image":            desc.ImageBackground,
+		"rating":           desc.Rating,
+		"description":      desc.Description,
+		"image_background": desc.ImageBackgroundAdditional,
 	}
 	results = append(results, result)
 
-	return results
+	return results, nil
 }
