@@ -68,7 +68,6 @@ func PayItem(ctx *gin.Context) gm.Games {
 }
 
 func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
-
 	page, err := strconv.Atoi(num)
 	if err != nil {
 		return nil, err
@@ -96,6 +95,7 @@ func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
 			return nil, err
 		}
 		result := gin.H{
+			"id":          i.ID,
 			"name":        i.Name,
 			"genre":       i.Genres,
 			"image":       i.ImageBackground,
@@ -113,12 +113,10 @@ func GamePage(id string, client *rawg.Client) ([]gin.H, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))
 	defer cancel()
 
 	var results []gin.H
-
 	desc, err := client.GetGame(ctx, gameId)
 	if err != nil {
 		return nil, err
