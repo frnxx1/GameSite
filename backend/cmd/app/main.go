@@ -43,7 +43,7 @@ func handleFunc() *gin.Engine {
 		c.Next()
 	})
 
-	r.POST("/:id", func(ctx *gin.Context) {
+	r.GET("/:id", func(ctx *gin.Context) {
 		game,err := gm.GamePage(ctx.Param("id"),client)
 		if err != nil {
 			ctx.JSON(400,err)

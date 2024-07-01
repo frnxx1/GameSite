@@ -31,7 +31,7 @@
 .block {
   height: 500px;
   width: 500px;
-  background-color: aqua;
+  background-color: #5a5a5a;
 }
 .banner {
   width: 100%;

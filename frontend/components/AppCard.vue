@@ -55,18 +55,20 @@ const { game } = defineProps(['game'])
     </v-card-text>
 
     <v-card-actions class="pa-4">
-      <v-btn
+      <!-- <v-btn
         color="orange-darken-1"
         text="Купить"
       	variant="elevated"
         @click="reserve"
-      ></v-btn>
+      ></v-btn> -->
 		<v-btn
         color="orange-darken-1"
         text="Подробнее" 
 		  border
-        @click="reserve"
-      ></v-btn>
+        
+      >
+		<NuxtLink :to=" '/'+ game.id ">About</NuxtLink>
+	</v-btn>
     </v-card-actions>
   </v-card>
 </template>

@@ -12,7 +12,6 @@ export const useGamesStore = defineStore('gamesStore', () => {
 	}
  })
 
-
 // const getGames = async () => {
 // 	const { data: responce } = await useFetch("https://api.igdb.com/v4/games", {
 // 	method: "POST",

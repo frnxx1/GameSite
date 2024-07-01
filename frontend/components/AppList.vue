@@ -10,10 +10,15 @@ const { data: games, refresh, pending } = await useAsyncData("gamesStore", () =>
   return gamesStore.getGames(page.value)
 })
 
+console.log(games.value);
+
+
 const change = function (currentPage) {
   page.value = currentPage
   refresh()
 }
+
+
 </script>
 
 <template>
