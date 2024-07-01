@@ -1,32 +1,17 @@
 <script setup lang="ts">
 import{ ref } from 'vue'
 const { game } = defineProps(['game'])
-const loading = ref(false)
 
-const reserve = function () {
-	loading.value = true
-	setTimeout(() => (loading.value = false), 2000)
-	}
 
 </script>
 
 <template>
   <v-card
-    :disabled="loading"
-    :loading="loading"
-		height="100%"
+
+	height="100%"
 		
 	 min-width="250"
   >
-    <!-- <template v-slot:loader="{ isActive }">
-      <v-progress-linear
-        :active="isActive"
-        color="orange-darken-1"
-        height="4"
-        indeterminate
-      ></v-progress-linear>
-    </template> -->
-
     <v-img
       height="250"
       :src="game.image"

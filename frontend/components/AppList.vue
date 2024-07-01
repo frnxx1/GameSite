@@ -32,16 +32,27 @@ const change = function (currentPage) {
         elevation="12"
         type="card, list-item-two-line, actions"
       >
-        <AppCard :game="game" />
+	<div class="contain-card">
+		   <AppCard :game="game" />
+	</div>
+     
+
       </v-skeleton-loader>
     </v-col>
   </v-row>
   <v-pagination
     v-model="currentPage"
-    :length="15"
+    :length="50"
     :total-visible="5"
     class="my-4"
     @click="change(currentPage)"
   ></v-pagination>
 </template>
 
+<style lang="scss" scoped>
+
+	.contain-card {
+		position: relative;
+		width: 100%;
+	}
+</style>
