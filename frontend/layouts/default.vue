@@ -8,12 +8,12 @@
     >
       <slot />
     </v-main>
+	 <AppFooter />
   </v-app>
 </template>
 
 <style scoped>
 	.column {
 		flex-direction: column;
-		/* max-height: 50%; */
 	}
 </style>

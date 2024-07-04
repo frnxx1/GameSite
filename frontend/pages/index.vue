@@ -13,6 +13,6 @@
 		<AppList />
 		
     </div>
-	 <AppFooter />
+
   </div>
 </template>
