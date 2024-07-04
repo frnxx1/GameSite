@@ -7,9 +7,16 @@ export const useGamesStore = defineStore('gamesStore', () => {
 		const { data: responce } = await useFetch(() => `http://localhost:3001?page=${page}&perPage=20`)
 		return responce.value
 	}
-	return { 
-		getGames
+	
+	const getOneGame = async(gameId) => {
+		const { data: response } = await useFetch(() => `http://localhost:3001/${gameId}` );
+		return response.value
 	}
+
+	return { 
+		getGames, getOneGame
+	}
+
  })
 
 // const getGames = async () => {

@@ -9,3 +9,62 @@
 .gap-20 {
 	gap: 20px;
 }
+
+.page__dgr {
+	background: url('/public/img/fon.jpg');
+	background-size: 100% 100%;
+}
+
+.product-page {
+
+	margin: 30px 0;
+
+	// .product-page__body
+	
+	&__body {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 35px;
+		margin-bottom: 30px;
+	}
+	
+	// .product-page__poster
+	
+	&__poster {
+		flex: 0 0 350px;
+	}
+	
+	// .product-page__info
+	
+	&__info {
+		flex: 1 1 auto;
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+	}
+	
+	// .product-page__title
+	
+	&__title {
+	}
+	&__price {
+		font-size: 20px;
+		color: #ff9800;
+	}
+	
+	// .product-page__raiting
+	
+	&__raiting {
+	}
+	
+	// .product-page__genre
+	
+	&__genre {
+	}
+	
+	// .product-page__description
+	
+	&__description {
+	}
+}
