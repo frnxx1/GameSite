@@ -18,7 +18,7 @@ const onClick = async function () {
 	loading.value = true;
 	console.log(searchName.value);
 
-	const responce = await useFetch('http://localhost:3001/games/search', {
+	const responce = await useFetch('http://localhost:3001/game/search', {
 		method: 'POST',
 		body: searchName.value
 	})

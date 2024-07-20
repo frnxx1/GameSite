@@ -3,6 +3,7 @@ package main
 import (
 	db "GameSite/internal/DB"
 	gm "GameSite/internal/Game"
+	"io"
 	"net/http"
 
 	"GameSite/internal/jwt/controllers"
@@ -52,8 +53,11 @@ func handleFunc() *gin.Engine {
 	})
 
 	r.POST("/game/search", func(ctx *gin.Context) {
-		text := ctx.PostForm("text")
-		res, err := sr.SearchGame(client, text)
+		text, err := io.ReadAll(ctx.Request.Body)
+		if err != nil {
+			ctx.JSON(400, err)
+		}
+		res, err := sr.SearchGame(client,string(text))
 		if err != nil {
 			ctx.JSON(400, err)
 		}
