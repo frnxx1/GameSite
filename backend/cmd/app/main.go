@@ -5,9 +5,9 @@ import (
 	gm "GameSite/internal/Game"
 	"net/http"
 
-	/* md "GameSite/internal/model" */
 	"GameSite/internal/jwt/controllers"
 	"GameSite/internal/jwt/middleware"
+	sr "GameSite/internal/searchGame"
 	"log"
 
 	"github.com/dimuska139/rawg-sdk-go/v3"
@@ -44,19 +44,28 @@ func handleFunc() *gin.Engine {
 	})
 
 	r.GET("/:id", func(ctx *gin.Context) {
-		game,err := gm.GamePage(ctx.Param("id"),client)
+		game, err := gm.GamePage(ctx.Param("id"), client)
 		if err != nil {
-			ctx.JSON(400,err)
+			ctx.JSON(400, err)
 		}
-		ctx.JSON(200,game)
+		ctx.JSON(200, game)
+	})
+
+	r.POST("/game/search", func(ctx *gin.Context) {
+		text := ctx.PostForm("text")
+		res, err := sr.SearchGame(client, text)
+		if err != nil {
+			ctx.JSON(400, err)
+		}
+		ctx.JSON(200, res)
 	})
 
 	r.GET("/", func(ctx *gin.Context) {
 		page := ctx.DefaultQuery("page", "1")
 		perPage := ctx.DefaultQuery("perPage", "20")
-		data,err := gm.MainPage(page, perPage, client)
+		data, err := gm.MainPage(page, perPage, client)
 		if err != nil {
-			ctx.JSON(400,err)
+			ctx.JSON(400, err)
 		}
 		ctx.JSON(200, data)
 	})

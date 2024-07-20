@@ -89,7 +89,7 @@ func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
 		return nil, err
 	}
 	var results []gin.H
-	for _, i := range game {
+	/* for _, i := range game {
 		desc, err := client.GetGame(ctx, i.ID)
 		if err != nil {
 			return nil, err
@@ -103,7 +103,11 @@ func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
 			"description": desc.Description,
 		}
 		results = append(results, result)
+	} */
+	result := gin.H{
+		"game":game,
 	}
+	results = append(results, result)
 	return results, nil
 
 }

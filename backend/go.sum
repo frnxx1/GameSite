@@ -8,6 +8,8 @@ github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumCAMpl/TFQ4/5kLM=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
+github.com/dimuska139/rawg-sdk-go v1.0.1 h1:YHzofU1ewQ54a0P1QSLfg6DhoUQOJPGYne1b6qvr8jg=
+github.com/dimuska139/rawg-sdk-go v1.0.1/go.mod h1:L1FMPaHdpnJ0F5QF/17cVlLPjsBK2MU/XVEVL1JNLTs=
 github.com/dimuska139/rawg-sdk-go/v3 v3.0.0 h1:r0I96FImnCyWeLuVApzn0R7d0qEunXbRuTO3KijzbXs=
 github.com/dimuska139/rawg-sdk-go/v3 v3.0.0/go.mod h1:8qeq53sJu8XYUpVag+a3cUvbxGoRTzNHvnpSeRQiX3Y=
 github.com/gabriel-vasile/mimetype v1.4.2 h1:w5qFW6JKBz9Y393Y4q372O9A7cUSequkh1Q7OhCmWKU=
