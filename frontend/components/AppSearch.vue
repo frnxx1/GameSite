@@ -2,6 +2,8 @@ import defineNuxtConfig from '../nuxt.config';
 <script setup lang="ts">
 import{ ref } from 'vue'
 
+const searchName = ref('')
+
 const loaded = ref(false)
 const loading = ref(false)
 const filters = [
@@ -12,13 +14,18 @@ const filters = [
 	{title: 'Стратегии', value: 'strategy'},
 ]
 
-const onClick = function () {
-  loading.value = true;
+const onClick = async function () {
+	loading.value = true;
+	console.log(searchName.value);
 
-  setTimeout(() => {
-    loading.value = false;
-    loaded.value = true;
-  }, 2000);
+	const responce = await useFetch('http://localhost:3001/games/search', {
+		method: 'POST',
+		body: searchName.value
+	})
+
+	loading.value = false;
+	console.log(responce);
+	
 }
 </script>
 
@@ -26,6 +33,7 @@ const onClick = function () {
   <div class="search-block__body">
     <div class="search-block__field">
         <v-text-field
+		  v-model="searchName"
           :loading="loading"
           append-inner-icon="mdi-magnify"
           density="compact"
@@ -36,7 +44,7 @@ const onClick = function () {
           @click:append-inner="onClick"
         ></v-text-field>
     </div>
-
+<div>{{ searchName }}</div>
     <div class="search-block__filter">
 		<ul v-for="filter in filters" :key="filter.title">
 			<li><v-chip color="orange-darken-1" variant="outlined" :value="filter.value" rounded="sm" >{{ filter.title }}</v-chip></li>

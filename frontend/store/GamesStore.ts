@@ -19,43 +19,6 @@ export const useGamesStore = defineStore('gamesStore', () => {
 
  })
 
-// const getGames = async () => {
-// 	const { data: responce } = await useFetch("https://api.igdb.com/v4/games", {
-// 	method: "POST",
-// 	headers: {
-// 		"Client-ID": "veftuzgvr6vae5133lstqxkz1rxy2u",
-// 		Authorization: "Bearer o6cnuwr9w0ladumfekz6fosygi55g8",
-// 	},
-// 	body: "fields *;",
-// 	})
-// 	games.value = responce
-// }
-
-// return {
-// 	games
-// }
-// })
-
-// export const useGamesStore = defineStore('gamesStore', {
-// 	state: () => ({
-// 		games:[]
-// 	}),
-// 	  actions: {
-//     	async getGames() {
-//    	   const {data: games} = await useFetch('https://api.igdb.com/v4/games', {
-// 			method: 'POST',
-// 			headers: {
-// 			'Client-ID': 'veftuzgvr6vae5133lstqxkz1rxy2u',
-// 			Authorization: 'Bearer o6cnuwr9w0ladumfekz6fosygi55g8',
-// 			},
-// 			body: 'fields *;'
-//       })
-
-//     },
-//   },
-// })
-
-// const fakeStoreUrl = 'https://fakestoreapi.com'
 
 // export interface Product {
 //   id: number
