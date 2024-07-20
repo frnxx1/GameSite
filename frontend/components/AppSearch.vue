@@ -22,7 +22,7 @@ const onClick = async function () {
 		method: 'POST',
 		body: searchName.value
 	})
-	
+
 
 	loading.value = false;
 	console.log(responce.value);
