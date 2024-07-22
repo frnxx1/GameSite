@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SearchGame(client *rawg.Client,text string) ([]gin.H, error, int) {
+func SearchGame(client *rawg.Client,text string) ([]gin.H, error) {
 	filter := rawg.NewGamesFilter().
 		SetSearch(text)
 
@@ -17,7 +17,7 @@ func SearchGame(client *rawg.Client,text string) ([]gin.H, error, int) {
 	game, _, err := client.GetGames(ctx, filter)
 
 	if err != nil {
-		return nil, err, 0
+		return nil, err
 	}
 	var results []gin.H
 	for _, i := range game {
@@ -29,5 +29,5 @@ func SearchGame(client *rawg.Client,text string) ([]gin.H, error, int) {
 		}
 		results = append(results, result)
 	}
-	return results, nil,len(results)
+	return results, nil
 }

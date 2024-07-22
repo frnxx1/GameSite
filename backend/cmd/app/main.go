@@ -57,11 +57,11 @@ func handleFunc() *gin.Engine {
 		if err != nil {
 			ctx.JSON(400, err)
 		}
-		res, err,lenGame := sr.SearchGame(client,string(text))
+		res, err := sr.SearchGame(client,string(text))
 		if err != nil {
 			ctx.JSON(400, err)
 		}
-		ctx.JSON(200, gin.H{"game":res,"len":lenGame})
+		ctx.JSON(200, gin.H{"game":res,"len":len(res)})
 	})
 
 	r.GET("/", func(ctx *gin.Context) {
@@ -71,7 +71,7 @@ func handleFunc() *gin.Engine {
 		if err != nil {
 			ctx.JSON(400, err)
 		}
-		ctx.JSON(200, data)
+		ctx.JSON(200, gin.H{"game":data,"len":len(data)})
 	})
 
 
