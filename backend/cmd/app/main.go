@@ -57,11 +57,11 @@ func handleFunc() *gin.Engine {
 		if err != nil {
 			ctx.JSON(400, err)
 		}
-		res, err := sr.SearchGame(client,string(text))
+		res, err,lenGame := sr.SearchGame(client,string(text))
 		if err != nil {
 			ctx.JSON(400, err)
 		}
-		ctx.JSON(200, res)
+		ctx.JSON(200, gin.H{"game":res,"len":lenGame})
 	})
 
 	r.GET("/", func(ctx *gin.Context) {
@@ -74,24 +74,6 @@ func handleFunc() *gin.Engine {
 		ctx.JSON(200, data)
 	})
 
-	r.POST("/PayItem/1/:name", func(ctx *gin.Context) {
-		item := gm.PayItem(ctx)
-		ctx.JSON(200, gin.H{"Product": item})
-	})
-
-	r.POST("/1", func(ctx *gin.Context) {
-		data := gm.CreateGame(ctx)
-		ctx.JSON(200, gin.H{"data": data})
-	})
-
-	r.POST("/1/:name", func(ctx *gin.Context) {
-		name := ctx.Param("name")
-		games, err := gm.PostGameId(ctx, name)
-		if err != nil {
-			ctx.JSON(404, gin.H{"error": "Неверный навзвание игры"})
-		}
-		ctx.JSON(200, gin.H{"success": games})
-	})
 
 	api := r.Group("/api")
 	{

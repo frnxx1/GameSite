@@ -11,7 +11,6 @@ import (
 
 	"github.com/dimuska139/rawg-sdk-go/v3"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 func PostGameId(ctx *gin.Context, id string) (gm.Games, error) {
@@ -43,29 +42,7 @@ func CreateGame(ctx *gin.Context) gm.Games {
 	return data
 }
 
-func PayItem(ctx *gin.Context) gm.Games {
-	var gameInfo gm.Item
-	if err := ctx.BindJSON(&gameInfo); err != nil {
-		log.Fatal(err)
-	}
-	item := gm.Item{
-		Id:    uuid.NewString(),
-		Name:  gameInfo.Name,
-		Desc:  gameInfo.Desc,
-		Coast: gameInfo.Coast,
-		Count: gameInfo.Count,
-		Image: "ссылка на картинку",
-	}
-	data := gm.Games{
-		Name: ctx.Param("name"),
-		Item: item,
-	}
-	res := db.GlobalDB.Create(data)
-	if res.RowsAffected == 0 {
-		log.Fatal("error creating game1")
-	}
-	return data
-}
+
 
 func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
 	page, err := strconv.Atoi(num)
