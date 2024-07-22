@@ -1,10 +1,9 @@
-import defineNuxtConfig from '../nuxt.config';
 <script setup lang="ts">
+import { useGamesStore } from "../store/GamesStore"
 import{ ref } from 'vue'
+const gamesStore = useGamesStore()
 
 const searchName = ref('')
-
-const loaded = ref(false)
 const loading = ref(false)
 const filters = [
 	{title: 'Шутеры', value: 'shooter'},
@@ -17,17 +16,12 @@ const filters = [
 const onClick = async function () {
 	loading.value = true;
 	console.log(searchName.value);
-
-	const {data:responce} = await useFetch('http://localhost:3001/game/search', {
-		method: 'POST',
-		body: searchName.value
+	const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
+		return gamesStore.searchGame(searchName.value)
 	})
-
-
-	loading.value = false;
-	console.log(responce.value);
-	
+	loading.value = false;	
 }
+
 </script>
 
 <template>

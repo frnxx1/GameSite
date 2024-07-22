@@ -3,8 +3,11 @@ import { defineStore } from "pinia"
 
 export const useGamesStore = defineStore('gamesStore', () => {
 
+	const games = ref([])
+
 	const getGames = async (page:number) => {
 		const { data: responce } = await useFetch(() => `http://localhost:3001?page=${page}&perPage=20`)
+		games.value = responce.value
 		return responce.value
 	}
 	
@@ -13,10 +16,18 @@ export const useGamesStore = defineStore('gamesStore', () => {
 		return response.value
 	}
 
-	return { 
-		getGames, getOneGame
+	const searchGame = async(searchName) => {
+		const {data:responce} = await useFetch('http://localhost:3001/game/search', {
+			method: 'POST',
+			body: searchName
+		})
+		console.log(responce.value);
+		games.value = responce.value
 	}
 
+	return { 
+		getGames, getOneGame, games, searchGame,
+	}
  })
 
 
