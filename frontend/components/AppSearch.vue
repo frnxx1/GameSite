@@ -18,13 +18,14 @@ const onClick = async function () {
 	loading.value = true;
 	console.log(searchName.value);
 
-	const responce = await useFetch('http://localhost:3001/game/search', {
+	const {data:responce} = await useFetch('http://localhost:3001/game/search', {
 		method: 'POST',
 		body: searchName.value
 	})
 
+
 	loading.value = false;
-	console.log(responce);
+	console.log(responce.value);
 	
 }
 </script>
