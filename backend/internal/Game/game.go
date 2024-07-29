@@ -1,48 +1,13 @@
 package GameSite
 
 import (
-	db "GameSite/internal/DB"
-	gm "GameSite/internal/model"
 	"context"
-	"errors"
-	"log"
 	"strconv"
 	"time"
 
 	"github.com/dimuska139/rawg-sdk-go/v3"
 	"github.com/gin-gonic/gin"
 )
-
-func PostGameId(ctx *gin.Context, id string) (gm.Games, error) {
-	var gameInfo gm.Games
-	res := db.GlobalDB.Find(&gameInfo, "name = ?", id)
-	if res.RowsAffected == 0 {
-		return gameInfo, errors.New("err")
-	}
-	return gm.Games{
-		Name:  gameInfo.Name,
-		Image: gameInfo.Image,
-	}, nil
-}
-
-func CreateGame(ctx *gin.Context) gm.Games {
-	var gameInfo gm.Games
-	if err := ctx.BindJSON(&gameInfo); err != nil {
-		log.Fatal(err)
-	}
-	data := gm.Games{
-		Name:        gameInfo.Name,
-		Description: gameInfo.Description,
-		Image:       "ссылка на картинку",
-	}
-	res := db.GlobalDB.Create(data)
-	if res.RowsAffected == 0 {
-		log.Fatal("error creating game")
-	}
-	return data
-}
-
-
 
 func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
 	page, err := strconv.Atoi(num)
@@ -81,7 +46,7 @@ func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
 		}
 		results = append(results, result)
 	}
-	
+
 	return results, nil
 
 }
