@@ -3,21 +3,22 @@ import{ ref } from 'vue'
 const { game } = defineProps(['game'])
 
 
+
+
 </script>
 
 <template>
   <v-card
-
 	height="100%"
-		
-	 min-width="250"
+	min-width="250"
   >
+  <NuxtLink :to=" '/'+ game.id ">
     <v-img
       height="250"
       :src="game.image"
       cover
     ></v-img>
-
+	</NuxtLink>
     <v-card-item>
       <v-card-title>{{game.name}}</v-card-title>
 
@@ -65,7 +66,6 @@ const { game } = defineProps(['game'])
         color="orange-darken-1"
         text="Подробнее" 
 		  border
-        
       >
 		<NuxtLink :to=" '/'+ game.id ">About</NuxtLink>
 	</v-btn>

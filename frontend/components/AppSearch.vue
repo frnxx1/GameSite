@@ -2,6 +2,7 @@
 import { useGamesStore } from "../store/GamesStore"
 import{ ref } from 'vue'
 const gamesStore = useGamesStore()
+const router = useRouter();
 
 const searchName = ref('')
 const loading = ref(false)
@@ -14,12 +15,14 @@ const filters = [
 ]
 
 const onClick = async function () {
+	router.push("search/")
 	loading.value = true;
 	console.log(searchName.value);
 	const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
-		return gamesStore.searchGame(searchName.value)
+		return gamesStore.searchingGame(searchName.value)
 	})
 	loading.value = false;	
+	searchName.value = ''
 }
 
 </script>
