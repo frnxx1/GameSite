@@ -16,7 +16,7 @@ func AddGame(id string, client *rawg.Client) error {
 
 	gameId, err := strconv.Atoi(id)
 	if err != nil {
-		log.Println(err, "Не верный ID")
+		log.Println(err, "Неверный ID")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))
 	defer cancel()

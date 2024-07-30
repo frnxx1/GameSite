@@ -73,6 +73,13 @@ func handleFunc() *gin.Engine {
 		}
 		ctx.JSON(200, gin.H{"game":data,"len":len(data)})
 	})
+	r.GET("/genre/:genre",func(ctx *gin.Context) {
+		result,err := gm.SearchGenre(client,ctx.Param("genre"))
+		if err != nil {
+			ctx.JSON(400, err)
+		}
+		ctx.JSON(200, result)
+	})
 
 
 	api := r.Group("/api")
