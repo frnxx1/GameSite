@@ -65,16 +65,14 @@ func handleFunc() *gin.Engine {
 	})
 
 	r.GET("/", func(ctx *gin.Context) {
-		page := ctx.DefaultQuery("page", "1")
-		perPage := ctx.DefaultQuery("perPage", "20")
-		data, err := gm.MainPage(page, perPage, client)
+		data, err := gm.MainPage(ctx.DefaultQuery("page", "1"),ctx.DefaultQuery("perPage", "20"), client)
 		if err != nil {
 			ctx.JSON(400, err)
 		}
 		ctx.JSON(200, gin.H{"game":data,"len":len(data)})
 	})
 	r.GET("/genre/:genre",func(ctx *gin.Context) {
-		result,err := gm.SearchGenre(client,ctx.Param("genre"))
+		result,err := gm.SearchGenre(client,ctx.Param("genre"),ctx.DefaultQuery("page", "1"),ctx.DefaultQuery("perPage", "20"))
 		if err != nil {
 			ctx.JSON(400, err)
 		}
