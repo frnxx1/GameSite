@@ -3,22 +3,21 @@ import { useGamesStore } from "../store/GamesStore"
 const gamesStore = useGamesStore()
 
 const page = ref(1)
-const currentPage = ref(1)
 
-const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
+const { pending } = await useAsyncData("gamesStore", () => {
   return gamesStore.getGames(page.value)
-})
+});
 
-const change = function (currentPage) {
-  page.value = currentPage
-  refresh()
-}
-
-
+const change = async function () {
+  page.value += 1
+  const {pending} = await useAsyncData("gamesStore", () => {
+    return gamesStore.getGames(page.value)
+  });
+};
 </script>
 
 <template>
-  <v-row class="mt-2 mb-2">
+  <v-row class="mt-2 mb-2" align="center" justify="center">
     <v-col
       v-for="game in gamesStore.games"
       cols="12"
@@ -28,30 +27,19 @@ const change = function (currentPage) {
       xs="12"
       :key="game.id"
     >
-      <v-skeleton-loader
-        :loading="pending"
-        elevation="12"
-        type="card, list-item-two-line, actions"
-      >
-	<div class="contain-card">
-		<AppCard :game="game" />
-	</div>
-		</v-skeleton-loader>
+      <div class="contain-card">
+        <AppCard :game="game" />
+      </div>
     </v-col>
+    <v-btn variant="outlined mt-2 mb-2" @click="change">
+      {{ pending ? "Загружаем..." : "Загрузить еще" }}
+    </v-btn>
   </v-row>
-  <v-pagination
-    v-model="currentPage"
-    :length="50"
-    :total-visible="5"
-    class="my-4"
-    @click="change(currentPage)"
-  ></v-pagination>
 </template>
 
 <style lang="scss" scoped>
-
-	.contain-card {
-		position: relative;
-		width: 100%;
-	}
+.contain-card {
+  position: relative;
+  width: 100%;
+}
 </style>
