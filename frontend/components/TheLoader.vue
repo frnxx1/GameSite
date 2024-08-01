@@ -3,7 +3,7 @@
 </script>
 
 <template>
-<span class="loader"></span>
+<div class="loader"></div>
 </template>
 
 <style scoped>
