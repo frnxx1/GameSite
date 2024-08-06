@@ -2,9 +2,11 @@
 import { useGamesStore } from "../store/GamesStore"
 import{ ref } from 'vue'
 const gamesStore = useGamesStore()
-const router = useRouter();
+const emit = defineEmits()
 const searchName = ref('')
-// const loading = ref(false)
+const router = useRouter()
+
+
 const filters = [
 	{title: 'Шутеры', value: 'shooter'},
 	{title: 'Головоломки', value: "puzzle"},
@@ -23,28 +25,17 @@ const filters = [
 	{title: 'Стратегии', value: "strategy"},
 ]
 
-//! декомпозируй поиск по имени
 
-// const searchByName = async function () {
-// 	router.push("search/")
-// 	loading.value = true;
-// 	console.log(searchName.value);
-// 	const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
-// 		return gamesStore.searchByName(searchName.value)
-// 	})
-// 	loading.value = false;	
-// 	searchName.value = ''
-// }
-// const searchByGenre = async function (valueGenre) {
+const searchByName = async function () {
+	console.log(searchName.value);
+	await emit('searchByName', searchName.value)
+	searchName.value = ''
+}
 
-// 	loading.value = true;
-// 	console.log(valueGenre);
-// 	const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
-// 		return gamesStore.searchByGenre(valueGenre, 1)
-// 	})
-// 	loading.value = false;	
-// 	// searchName.value = ''
-// }
+const searchByGenre = async function (value) {
+
+	await emit('searchByGenre', value)
+}
 
 </script>
 
@@ -65,9 +56,20 @@ const filters = [
     </div>
 <div>{{ searchName }}</div>
     <div class="search-block__filter">
-		<ul v-for="filter in filters" :key="filter.title">
-			<li><v-chip color="orange-darken-1" variant="outlined" :value="filter.value" rounded="sm" @click="$emit('searchByGenre', filter.value)">{{ filter.title }}</v-chip></li>
-		</ul>
+		<v-chip-group filter
+        selected-class="text-primary"
+        column
+      >
+        <v-chip	
+		  	mandatory
+			color="orange-darken-1" 
+          v-for="filter in filters" :key="filter.title" 
+			 @click.once="searchByGenre(filter.value)"
+			:value = filter.value
+			 >
+          {{ filter.title }}
+        </v-chip>
+      </v-chip-group>
     </div>
   </div>
 </template>

@@ -3,15 +3,14 @@ import { defineStore } from "pinia"
 export const useGamesStore = defineStore('gamesStore', () => {
 
 	const games = ref([]) //стейт для всех игр
-	const gamesFoundByName = ref([]) // стейт для игр, найденных по имени
 	const loading = ref(false)
-	const gamesFoundByGenre = ref([]) // стейт для игр, найденных по жанру
-	const pageSearch = ref(1)
+	const gamesFoundBy = ref([]) // стейт для игр, найденных по жанру или имени
 	const genre = ref('')
+	const isSearchByName = ref(false) //если true, то кнопка "загрузить еще" задизейблится
 
 	//постраничное получение списка игр
 	const getGames = async (page:number) => {
-		const { data: responce } = await useFetch(() => `http://localhost:3001?page=${page}&perPage=40`)
+		const { data: responce } = await useFetch(() => `http://localhost:3001?page=${page}&perPage=20`)
 		games.value = games.value.concat(responce.value.game)
 		console.log(responce.value);
 		return responce.value
@@ -23,8 +22,14 @@ export const useGamesStore = defineStore('gamesStore', () => {
 		return response.value
 	}
 
-	//поиск по играм по названию
+	//поиск по играм по названию перепиши
 	const searchByName = async(searchName) => {   
+		console.log('searchName')
+
+		//чтобы задизейблилась кнопка "загрузить еще", т.к. при поиске по имени
+		//сервер отпраывляет только 20 игр
+		isSearchByName.value = true 
+		
 		loading.value = true
 		const {data:responce} = await useFetch('http://localhost:3001/game/search', {
 			method: 'POST',
@@ -32,52 +37,32 @@ export const useGamesStore = defineStore('gamesStore', () => {
 		})
 
 		console.log(responce.value);
-		gamesFoundByName.value = responce.value.game
+		gamesFoundBy.value = responce.value.game
 		loading.value = false	
 	}
 
-	//! поиск по играм по жанру //отловить баг! кликаем жанр->кикаем кнопку загрузить еще -> кликаем жанр 
-	//! подгружаются иггы повторно. Как вариант задизейблить кнопку жанра для предотв. повторного нажатия
-	//? перепиши корявый код внизу
+	//поиск по играм по жанру 
 	const searchByGenre = async (searchGenre, page:number) => {
 		loading.value = true	
-		if((genre.value === searchGenre) && (pageSearch.value !== page)) {
-			console.log('повторный круг')
-			console.log(page);
+		isSearchByName.value = false 
+		//повторный запрос по жанру, добавляем следующую страницу 
+		if(genre.value === searchGenre) {
 			const { data: responce } = await useFetch(() => `http://localhost:3001/genre/${searchGenre}?page=${page}&perPage=20`)
-			console.log(responce.value)
-
-			gamesFoundByGenre.value = gamesFoundByGenre.value.concat(responce.value)
-
-			console.log(gamesFoundByGenre.value)
-			loading.value = false	
-			return responce.value
-
-		} else if(genre.value === searchGenre && pageSearch.value === page) {
-			console.log('совпадает и жанр и страница, ничо не делаем');
+			gamesFoundBy.value = gamesFoundBy.value.concat(responce.value)
 			loading.value = false	
 			return responce.value
 
 		} else {
-			console.log('другой жанр или первый запрос');
+			//первичный запрос по жанру, перезаписываем стейт с массивом
 			genre.value = searchGenre
-			// pageSearch.value = page
-			console.log(searchGenre)
-			console.log(genre)
-			console.log(page);
-
 			const { data: responce } = await useFetch(() => `http://localhost:3001/genre/${searchGenre}?page=${page}&perPage=20`)
-			console.log(responce.value)
-
-			gamesFoundByGenre.value = responce.value
-
-			console.log(gamesFoundByGenre.value)
+			gamesFoundBy.value = responce.value
 			loading.value = false	
 			return responce.value
 		}
 	}
 	return { 
-		getGames, getOneGame, games, searchByName, gamesFoundByName, loading, searchByGenre, gamesFoundByGenre,
+		getGames, getOneGame, games, searchByName, loading, searchByGenre, gamesFoundBy, genre, isSearchByName
 	}
  })
 

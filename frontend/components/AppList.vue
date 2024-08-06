@@ -31,7 +31,7 @@ const change = async function () {
         <AppCard :game="game" />
       </div>
     </v-col>
-    <v-btn variant="outlined mt-2 mb-2" @click="change">
+    <v-btn variant="outlined" class="mt-2 mb-2" @click="change">
       {{ pending ? "Загружаем..." : "Загрузить еще" }}
     </v-btn>
   </v-row>
