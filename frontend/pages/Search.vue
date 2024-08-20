@@ -3,9 +3,14 @@ import { useGamesStore } from "../store/GamesStore"
 const gamesStore = useGamesStore()
 const page = ref(1)
 const genre = ref('')
+const route = useRoute()
+const router = useRouter()
+const currentQuery = ref()
 
-
+//! допиши код, чтобы при клике перекидывало на страницу поиска router.push("search/")
 const searchByGenre = async function (searchGenre) {
+	// console.log(route.name);
+	
 	console.log(searchGenre)
 	genre.value = searchGenre
 	const { pending } = await useAsyncData("gamesStore", () => {
@@ -13,8 +18,22 @@ const searchByGenre = async function (searchGenre) {
 	})	
 }
 
-//! допиши код, чтобы при клике перекидывало ан страницу поиска router.push("search/")
+watch(
+  () => route.query,
+  async (q, prevQ) => {
+	console.log(q);
+	console.log(prevQ);
+	currentQuery.value = q.query
+}
+)
 
+const searchByName = async function (searchName) {
+	// console.log(route.name);
+	await router.push({query: {query: searchName}}) 
+	const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
+		return gamesStore.searchByName(currentQuery.value)
+	})
+}
 
 const moreGames = async function () {
 	page.value += 1
@@ -22,15 +41,6 @@ const moreGames = async function () {
 		return gamesStore.searchByGenre(genre.value, page.value)
 	})	
 }
-
-const searchByName = async function (searchName) {
-	console.log(searchName);
-	const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
-		return gamesStore.searchByName(searchName)
-	})
-}
-
-
 </script>
 
 <template>

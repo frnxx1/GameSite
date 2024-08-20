@@ -5,7 +5,7 @@ const gamesStore = useGamesStore()
 const emit = defineEmits()
 const searchName = ref('')
 const router = useRouter()
-
+const route = useRoute()
 
 const filters = [
 	{title: 'Шутеры', value: 'shooter'},
@@ -26,15 +26,33 @@ const filters = [
 ]
 
 
+	
 const searchByName = async function () {
-	console.log(searchName.value);
+	if( route.name === "search") {
 	await emit('searchByName', searchName.value)
 	searchName.value = ''
+	} else {
+			await router.push({
+			path:"search/",
+			query: {query: searchName.value}
+		}) 
+		const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
+		return gamesStore.searchByName(searchName.value)
+	})
+	}	
 }
 
 const searchByGenre = async function (value) {
+	
+	// if (route.currentRoute.value.path === "/") {
 
-	await emit('searchByGenre', value)
+		// router.push("search/")
+		// await emit('searchByGenre', value)
+	// } else {
+		// console.log(route.currentRoute.value.path);
+		// // router.push("search/")
+		// await emit('searchByGenre', value)
+	// }
 }
 
 </script>
@@ -52,6 +70,7 @@ const searchByGenre = async function (value) {
           hide-details
           single-line
           @click:append-inner="searchByName"
+			 @keyup.enter="searchByName"
         ></v-text-field>
     </div>
 <div>{{ searchName }}</div>

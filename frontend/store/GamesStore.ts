@@ -24,8 +24,6 @@ export const useGamesStore = defineStore('gamesStore', () => {
 
 	//поиск по играм по названию перепиши
 	const searchByName = async(searchName) => {   
-		console.log('searchName')
-
 		//чтобы задизейблилась кнопка "загрузить еще", т.к. при поиске по имени
 		//сервер отпраывляет только 20 игр
 		isSearchByName.value = true 
