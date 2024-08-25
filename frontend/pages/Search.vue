@@ -7,16 +7,15 @@ const route = useRoute()
 const router = useRouter()
 const currentQuery = ref()
 
-//! допиши код, чтобы при клике перекидывало на страницу поиска router.push("search/")
+
 const searchByGenre = async function (searchGenre) {
-	// console.log(route.name);
-	
-	console.log(searchGenre)
-	genre.value = searchGenre
-	const { pending } = await useAsyncData("gamesStore", () => {
-		return gamesStore.searchByGenre(searchGenre, page.value)
-	})	
+	await router.push({query: {query: searchGenre}}) 
+
+	const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
+		return gamesStore.searchByGenre(currentQuery.value, page.value)
+	})
 }
+
 
 watch(
   () => route.query,
@@ -28,7 +27,6 @@ watch(
 )
 
 const searchByName = async function (searchName) {
-	// console.log(route.name);
 	await router.push({query: {query: searchName}}) 
 	const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
 		return gamesStore.searchByName(currentQuery.value)
@@ -38,7 +36,7 @@ const searchByName = async function (searchName) {
 const moreGames = async function () {
 	page.value += 1
 	const { pending } = await useAsyncData("gamesStore", () => {
-		return gamesStore.searchByGenre(genre.value, page.value)
+		return gamesStore.searchByGenre(currentQuery.value, page.value)
 	})	
 }
 </script>
@@ -46,7 +44,7 @@ const moreGames = async function () {
 <template>
 <div>
     <div class="container-block">	
-      <AppSearch @searchByName="searchByName" @searchByGenre="searchByGenre"/>	
+      <AppSearch @searchByName="searchByName" @searchByGenre="searchByGenre" :value="currentQuery"/>	
 		<v-row class="mt-2 mb-2" align="center" justify="center">
     <v-col 
       v-for="game in gamesStore.gamesFoundBy"

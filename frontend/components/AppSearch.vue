@@ -26,33 +26,40 @@ const filters = [
 ]
 
 
-	
+//поиск по названию игры	
 const searchByName = async function () {
+	//если поиск на странице search
 	if( route.name === "search") {
 	await emit('searchByName', searchName.value)
 	searchName.value = ''
 	} else {
+		//если поиск с главной, то пушим параметр в урл
 			await router.push({
 			path:"search/",
 			query: {query: searchName.value}
 		}) 
+		//затем делаем запрос на бэкенд
 		const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
 		return gamesStore.searchByName(searchName.value)
 	})
 	}	
 }
 
-const searchByGenre = async function (value) {
-	
-	// if (route.currentRoute.value.path === "/") {
 
-		// router.push("search/")
-		// await emit('searchByGenre', value)
-	// } else {
-		// console.log(route.currentRoute.value.path);
-		// // router.push("search/")
-		// await emit('searchByGenre', value)
-	// }
+const searchByGenre = async function (value) {
+	if( route.name === "search") {
+		await emit('searchByGenre', value)
+	} else {
+		//если поиск с главной, то пушим параметр в урл
+			await router.push({
+			path:"search/",
+			query: {query: value}
+		}) 
+		//затем делаем запрос на бэкенд
+		const { data, refresh, pending } = await useAsyncData("gamesStore", () => {
+		return gamesStore.searchByGenre(value, 1)
+	})
+	}	
 }
 
 </script>
@@ -73,7 +80,6 @@ const searchByGenre = async function (value) {
 			 @keyup.enter="searchByName"
         ></v-text-field>
     </div>
-<div>{{ searchName }}</div>
     <div class="search-block__filter">
 		<v-chip-group filter
         selected-class="text-primary"
@@ -84,11 +90,11 @@ const searchByGenre = async function (value) {
 			color="orange-darken-1" 
           v-for="filter in filters" :key="filter.title" 
 			 @click.once="searchByGenre(filter.value)"
-			:value = filter.value
+			:value="filter.value" 
 			 >
           {{ filter.title }}
-        </v-chip>
-      </v-chip-group>
+        </v-chip>		 
+      </v-chip-group> 
     </div>
   </div>
 </template>
