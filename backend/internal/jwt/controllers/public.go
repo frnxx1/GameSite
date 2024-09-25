@@ -115,5 +115,5 @@ func Login(c *gin.Context) {
 		RefreshToken: signedtoken,
 	}
 	log.Println(tokenResponse)
-	c.JSON(204, tokenResponse)
+	c.JSON(204, "123")
 }
