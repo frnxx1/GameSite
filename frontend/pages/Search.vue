@@ -2,11 +2,11 @@
 import { useGamesStore } from "../store/GamesStore"
 const gamesStore = useGamesStore()
 const page = ref(1)
-const genre = ref('')
 const route = useRoute()
 const router = useRouter()
-const currentQuery = ref()
 
+const genre = ref(route.query.query)
+const currentQuery = ref()
 
 const searchByGenre = async function (searchGenre) {
 	await router.push({query: {query: searchGenre}}) 
@@ -23,8 +23,16 @@ watch(
 	console.log(q);
 	console.log(prevQ);
 	currentQuery.value = q.query
+	genre.value = q.query
 }
 )
+
+//проверь функцию из документации
+// const id = ref(1)
+// const { data, error, refresh } = await useFetch('/api/users', {
+//   watch: [id]
+// })
+
 
 const searchByName = async function (searchName) {
 	await router.push({query: {query: searchName}}) 
@@ -35,10 +43,15 @@ const searchByName = async function (searchName) {
 
 const moreGames = async function () {
 	page.value += 1
+	console.log(currentQuery.value);
+	console.log(genre.value);
+	console.log(route.query.query);
+	
 	const { pending } = await useAsyncData("gamesStore", () => {
-		return gamesStore.searchByGenre(currentQuery.value, page.value)
+		return gamesStore.searchByGenre(genre.value, page.value)
 	})	
 }
+
 </script>
 
 <template>
