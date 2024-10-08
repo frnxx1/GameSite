@@ -1,18 +1,18 @@
 package GameSite
 
 import (
-	"fmt"
-	"log"
 	md "GameSite/internal/model"
+	"fmt"
+
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-
 )
 
 type User struct {
 	gorm.Model
 	ID       int `gorm:"primaryKey"`
-	Name     string 
+	Name     string
 	Email    string `json:"email" binding:"required" gorm:"unique"`
 	Password string `json:"password" binding:"required"`
 }
@@ -35,9 +35,9 @@ func InitDatabase() (err error) {
 	if err != nil {
 		return err
 	}
-	err = GlobalDB.AutoMigrate(&md.Games{},&User{})
+	err = GlobalDB.AutoMigrate(&md.Games{}, &User{})
 	if err != nil {
-		log.Fatal("Error connecting to the database...", err)
+		logrus.Errorf("Error connecting to the database..., err: %s", err)
 	}
 	fmt.Println("Database connection successful...")
 	return

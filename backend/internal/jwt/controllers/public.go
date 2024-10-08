@@ -1,16 +1,15 @@
 package controllers
 
 import (
-	"log"
-	"GameSite/internal/jwt/auth"
 	db "GameSite/internal/DB"
+	"GameSite/internal/jwt/auth"
 	"GameSite/internal/jwt/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
- 
 type LoginPayload struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
@@ -23,11 +22,11 @@ type LoginResponse struct {
 }
 
 /* регистрация */
-func Signup(c *gin.Context)error {
+func Signup(c *gin.Context) error {
 	var user models.User
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		log.Println(err)
+		logrus.Errorf("couldn't to get user data, err: %s", err)
 		c.JSON(400, gin.H{
 			"Error": "Invalid Inputs ",
 		})
@@ -36,7 +35,7 @@ func Signup(c *gin.Context)error {
 	}
 	err = user.HashPassword(user.Password)
 	if err != nil {
-		log.Println(err.Error())
+		logrus.Errorf("couldn't to hash password, err: %s", err)
 		c.JSON(500, gin.H{
 			"Error": "Error Hashing Password",
 		})
@@ -45,24 +44,26 @@ func Signup(c *gin.Context)error {
 	}
 	err = user.CreateUserRecord()
 	if err != nil {
-		log.Println(err)
+		logrus.Errorf("couldn't to create user data, err: %s", err)
 		c.JSON(500, gin.H{
 			"Error": "Error Creating User ",
 		})
 		c.Abort()
-		return err  
+		return err
 	}
 	c.JSON(200, gin.H{
 		"Message": "Sucessfully Register",
 	})
 	return nil
 }
+
 /* вход  */
 func Login(c *gin.Context) {
 	var payload LoginPayload
 	var user models.User
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
+		logrus.Errorf("couldn't to get user data, err: %s", err)
 		c.JSON(400, gin.H{
 			"Error": "Invalid Inputs",
 		})
@@ -71,6 +72,7 @@ func Login(c *gin.Context) {
 	}
 	result := db.GlobalDB.Where("email = ?", payload.Email).First(&user)
 	if result.Error == gorm.ErrRecordNotFound {
+		logrus.Errorf("couldn't to find user data by email, err: %s", err)
 		c.JSON(401, gin.H{
 			"Error": "Invalid User Credentials",
 		})
@@ -79,7 +81,7 @@ func Login(c *gin.Context) {
 	}
 	err = user.CheckPassword(payload.Password)
 	if err != nil {
-		log.Println(err)
+		logrus.Errorf("couldn't to check password, err: %s", err)
 		c.JSON(401, gin.H{
 			"Error": "Invalid User Credentials",
 		})
@@ -94,7 +96,7 @@ func Login(c *gin.Context) {
 	}
 	signedToken, err := jwtWrapper.GenerateToken(user.Email)
 	if err != nil {
-		log.Println(err)
+		logrus.Errorf("couldn't to generate access token, err: %s", err)
 		c.JSON(500, gin.H{
 			"Error": "Error Signing Token",
 		})
@@ -103,7 +105,7 @@ func Login(c *gin.Context) {
 	}
 	signedtoken, err := jwtWrapper.RefreshToken(user.Email)
 	if err != nil {
-		log.Println(err)
+		logrus.Errorf("couldn't to generate refresh token, err: %s", err)
 		c.JSON(500, gin.H{
 			"Error": "Error Signing Token",
 		})
@@ -114,6 +116,8 @@ func Login(c *gin.Context) {
 		Token:        signedToken,
 		RefreshToken: signedtoken,
 	}
-	log.Println(tokenResponse)
-	c.JSON(204, "123")
+
+	c.JSON(204, gin.H{
+		"Token": tokenResponse,
+	})
 }

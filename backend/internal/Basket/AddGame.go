@@ -4,11 +4,11 @@ import (
 	db "GameSite/internal/DB"
 	md "GameSite/internal/model"
 	"context"
-	"log"
 	"strconv"
 	"time"
 
 	"github.com/dimuska139/rawg-sdk-go/v3"
+	"github.com/sirupsen/logrus"
 )
 
 func AddGame(id string, client *rawg.Client) error {
@@ -16,14 +16,16 @@ func AddGame(id string, client *rawg.Client) error {
 
 	gameId, err := strconv.Atoi(id)
 	if err != nil {
-		log.Println(err, "Неверный ID")
+		logrus.Errorf("couldn't to translate id, err: %s", err)
+		return err
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*10))
 	defer cancel()
 
 	desc, err := client.GetGame(ctx, gameId)
 	if err != nil {
-		log.Println(err, "Нет игр с таким ID")
+		logrus.Errorf("couldn't to find games, err: %s", err)
+		return err
 	}
 
 	gameInfo = md.Games{
@@ -36,7 +38,8 @@ func AddGame(id string, client *rawg.Client) error {
 	if res.RowsAffected == 0 {
 		db.GlobalDB.Create(&gameInfo)
 		if res.RowsAffected == 0 {
-			log.Println("Ошибка добавления в корзину")
+			logrus.Errorf("couldn't to add game, err: %s", err)
+			return res.Error
 		}
 	}
 

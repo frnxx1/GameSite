@@ -9,10 +9,10 @@ import (
 	"GameSite/internal/jwt/controllers"
 	"GameSite/internal/jwt/middleware"
 	sr "GameSite/internal/searchGame"
-	"log"
 
 	"github.com/dimuska139/rawg-sdk-go/v3"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 /* {
@@ -57,28 +57,27 @@ func handleFunc() *gin.Engine {
 		if err != nil {
 			ctx.JSON(400, err)
 		}
-		res, err := sr.SearchGame(client,string(text))
+		res, err := sr.SearchGame(client, string(text))
 		if err != nil {
 			ctx.JSON(400, err)
 		}
-		ctx.JSON(200, gin.H{"game":res,"len":len(res)})
+		ctx.JSON(200, gin.H{"game": res, "len": len(res)})
 	})
 
 	r.GET("/", func(ctx *gin.Context) {
-		data, err := gm.MainPage(ctx.DefaultQuery("page", "1"),ctx.DefaultQuery("perPage", "20"), client)
+		data, err := gm.MainPage(ctx.DefaultQuery("page", "1"), ctx.DefaultQuery("perPage", "20"), client)
 		if err != nil {
 			ctx.JSON(400, err)
 		}
-		ctx.JSON(200, gin.H{"game":data,"len":len(data)})
+		ctx.JSON(200, gin.H{"game": data, "len": len(data)})
 	})
-	r.GET("/genre/:genre",func(ctx *gin.Context) {
-		result,err := gm.SearchGenre(client,ctx.Param("genre"),ctx.DefaultQuery("page", "1"),ctx.DefaultQuery("perPage", "20"))
+	r.GET("/genre/:genre", func(ctx *gin.Context) {
+		result, err := gm.SearchGenre(client, ctx.Param("genre"), ctx.DefaultQuery("page", "1"), ctx.DefaultQuery("perPage", "20"))
 		if err != nil {
 			ctx.JSON(400, err)
 		}
 		ctx.JSON(200, result)
 	})
-
 
 	api := r.Group("/api")
 	{
@@ -108,7 +107,7 @@ func handleFunc() *gin.Engine {
 func main() {
 	err := db.InitDatabase()
 	if err != nil {
-		log.Fatal(err)
+		logrus.Errorf("couldn't initialize database: %v", err)
 	}
 	r := handleFunc()
 	r.Run(":3001")

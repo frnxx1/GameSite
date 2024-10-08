@@ -7,15 +7,18 @@ import (
 
 	"github.com/dimuska139/rawg-sdk-go/v3"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
 	page, err := strconv.Atoi(num)
 	if err != nil {
+		logrus.Errorf("failed translate num, err: %s", err)
 		return nil, err
 	}
 	perPage, err := strconv.Atoi(perNum)
 	if err != nil {
+		logrus.Errorf("failed translate perNum, err: %s", err)
 		return nil, err
 	}
 	filter := rawg.NewGamesFilter().
@@ -26,14 +29,16 @@ func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))
 	defer cancel()
 	game, _, err := client.GetGames(ctx, filter)
-
 	if err != nil {
+		logrus.Errorf("couldn't find games, err: %s", err)
 		return nil, err
 	}
+
 	var results []gin.H
 	for _, i := range game {
 		desc, err := client.GetGame(ctx, i.ID)
 		if err != nil {
+			logrus.Errorf("couldn't find games on id, err: %s", err)
 			return nil, err
 		}
 		result := gin.H{
@@ -54,6 +59,7 @@ func MainPage(num, perNum string, client *rawg.Client) ([]gin.H, error) {
 func GamePage(id string, client *rawg.Client) ([]gin.H, error) {
 	gameId, err := strconv.Atoi(id)
 	if err != nil {
+		logrus.Errorf("failed translate id, err: %s", err)
 		return nil, err
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*500))
@@ -62,6 +68,7 @@ func GamePage(id string, client *rawg.Client) ([]gin.H, error) {
 	var results []gin.H
 	desc, err := client.GetGame(ctx, gameId)
 	if err != nil {
+		logrus.Errorf("couldn't find games, err: %s", err)
 		return nil, err
 	}
 	result := gin.H{
