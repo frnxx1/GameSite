@@ -116,7 +116,17 @@ func Login(c *gin.Context) {
 		Token:        signedToken,
 		RefreshToken: signedtoken,
 	}
-	
+
+	c.SetCookie(
+		"refresh_token",
+		signedToken,
+		60*60*24*30,
+		"/",
+		"localhost",
+		false,
+		true,
+	)
+
 	c.JSON(200, gin.H{
 		"Token": tokenResponse,
 	})
