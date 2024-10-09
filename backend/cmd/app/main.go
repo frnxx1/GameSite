@@ -11,16 +11,10 @@ import (
 	sr "GameSite/internal/searchGame"
 
 	"github.com/dimuska139/rawg-sdk-go/v3"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
-
-/* {
-    "Name":"Нож-бабочка",
-    "Desc":"Острый",
-    "Count":1,
-    "Coast":500000
-} */
 
 func handleFunc() *gin.Engine {
 	r := gin.Default()
@@ -30,19 +24,19 @@ func handleFunc() *gin.Engine {
 		Rps:      5,
 	}
 	client := rawg.NewClient(http.DefaultClient, &config)
-	r.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	url := "http://localhost:3000"
 
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
-		c.Next()
-	})
+	// Настройка CORS
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{url},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == url
+		},
+	}))
 
 	r.GET("/:id", func(ctx *gin.Context) {
 		game, err := gm.GamePage(ctx.Param("id"), client)
@@ -83,7 +77,6 @@ func handleFunc() *gin.Engine {
 	{
 		public := api.Group("/public")
 		{
-
 			public.POST("/login", controllers.Login)
 			public.POST("/signup", func(ctx *gin.Context) {
 				err := controllers.Signup(ctx)
