@@ -118,7 +118,7 @@ func Login(c *gin.Context) {
 	}
 
 	c.SetCookie(
-		"refresh_token",
+		"access_token",
 		signedToken,
 		60*60*24*30,
 		"/",

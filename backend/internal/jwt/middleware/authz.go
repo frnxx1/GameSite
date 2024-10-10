@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-/* Миддлвэйр, типа таможни или пограничников перед городом */
 func AuthZ() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		clientToken := c.Request.Header.Get("Authorization")
@@ -20,10 +19,8 @@ func AuthZ() gin.HandlerFunc {
 
 		extractedToken := strings.Split(clientToken, "Bearer ")
 		if len(extractedToken) == 2 {
-
 			clientToken = strings.TrimSpace(extractedToken[1])
-		} else {
-
+		}else {
 			c.JSON(400, "Incorrect Format of Authorization Token")
 			c.Abort()
 			return
