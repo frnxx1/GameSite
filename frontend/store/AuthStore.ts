@@ -9,15 +9,20 @@ export const useAuthStore = defineStore('authStore', () => {
 
 //? разобраться с токенами
 
-	const isAuth = ref(false)
-	const accessToken = ref(useCookie('access_token'))
+	const isAuth = ref(true)
+	const accessToken = ref({})
+
+	// const accessTokenComputed = computed( () => {
+	// 	const {data: tokens} = useFetch('/api/cookies')
+	// 	return tokens.value?.cookies.access_token		
+	// })
 
 	const login = async (values) => {
 		const {data:responce, error, status} = await useFetch('http://localhost:3001/api/public/login', {
 			method: 'POST',
 			credentials: 'include',
 			body: values,
-			headers: accessToken.value ? {Authorization: `Bearer ${accessToken.value}` } : {},
+			// headers: accessToken.value ? {Authorization: `Bearer ${accessToken.value}` } : {},
 		})
 		console.log(responce);
 		
@@ -37,14 +42,23 @@ export const useAuthStore = defineStore('authStore', () => {
 	}
 
 	const checkToken = async () => {
-		const {data:responce, error, status} = await useFetch('http://localhost:3001/api/protected/profile/', {
+
+		const {data: tokens} = await useFetch('/api/cookies')
+		
+		accessToken.value = tokens.value?.cookies.access_token
+		console.log("тест", tokens);
+		
+
+		console.log(accessToken.value);
+		
+		const {data:responce, error, status} = await useFetch('http://localhost:3001/api/protected/profile', {
 			credentials: 'include',
 			headers: accessToken.value ? {Authorization: `Bearer ${accessToken.value}` } : {},
 		})
 		console.log(responce);
 		console.log(status);
 
-		if (status.value === 401) {
+		if (status.value === 'error') {
 			// console.log(responce);
 			try {
 				const newToken = await refreshToken()
@@ -58,25 +72,36 @@ export const useAuthStore = defineStore('authStore', () => {
 			} catch (error) {
 				console.log(error);
 			}
-		}
-		
-		if (status.value === "success") {
-		console.log('токен обновился');
+		} else if (status.value === "success") {
+			console.log('токен обновился')
 		}
 
 		return responce.value
 	}
 
 	async function refreshToken () {
-		const refreshToken = useCookie("refresh_token")
-		const {data, status} = await useFetch("http://localhost:3001/protected/profile", {
-			method: 'POST',
-			body: {refresh: refreshToken.value},
+		
+		const {data: tokens} = await useFetch('/api/cookies')
+		console.log(tokens);
+		console.log(tokens.value?.cookies.refresh_token);
+		
+		const refreshToken = tokens.value?.cookies.refresh_token
+		console.log(refreshToken);
+		
+		
+		const {data, error, status} = await useFetch("http://localhost:3001/api/protected/profile", {
+			credentials: 'include',
+			// headers: refreshToken.value ? {Authorization: `Bearer ${refreshToken.value}` } : {},
+			headers: refreshToken ? {Authorization: `Bearer ${refreshToken}` } : {},
 		})
 		if (status.value === "success") {
+			console.log('токен успешно обновлен');
+			
 			console.log(data);
 			return data.value?.access_token
 		} else {
+			console.log(status);
+			console.log(error);
 			console.log("Токен не обновился");
 		}
 	}
@@ -110,7 +135,7 @@ export const useAuthStore = defineStore('authStore', () => {
 
 
 	return { 
-		login, signup, isAuth, logout, checkToken, refreshToken
+		login, signup, isAuth, logout, checkToken, refreshToken, accessToken, accessTokenComputed
 	}
 
 })
