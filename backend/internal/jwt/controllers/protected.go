@@ -52,21 +52,10 @@ func Profile(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	signedtoken, err := jwtWrapper.RefreshToken(user.Email)
-	if err != nil {
-		logrus.Errorf("couldn't to generate refresh token, err: %s", err)
-		c.JSON(500, gin.H{
-			"Error": "Error Signing Token",
-		})
-		c.Abort()
-		return
-	}
-	tokenResponse := LoginResponse{
-		Token:        signedToken,
-		RefreshToken: signedtoken,
-	}
+
+	
 	c.JSON(200, gin.H{
 		"User":  user,
-        "Token": tokenResponse,
+        "Token": si,
 	})
 }
