@@ -52,6 +52,15 @@ func Profile(c *gin.Context) {
 		c.Abort()
 		return
 	}
+	c.SetCookie(
+		"access_token",
+		signedToken,
+		60,
+		"/",
+		"localhost",
+		false,
+		true,
+	)
 
 	c.JSON(200, gin.H{
 		"User":  user,
