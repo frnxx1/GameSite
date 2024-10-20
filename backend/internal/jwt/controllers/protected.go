@@ -53,9 +53,8 @@ func Profile(c *gin.Context) {
 		return
 	}
 
-	
 	c.JSON(200, gin.H{
 		"User":  user,
-        "Token": si,
+		"Token": signedToken,
 	})
 }
