@@ -2,59 +2,40 @@
 definePageMeta({
 	middleware: 'auth'
 })
-
-
+import { useGlobalStore } from "../store"
 import { useAuthStore } from "../store/AuthStore"
 const authStore = useAuthStore()
+const globalStore = useGlobalStore()
 
-const refreshToken = async function() {
-	const { data, pending, error } = await useAsyncData("authStore", () => {
-		return authStore.checkToken()
-	});
-}
+const { data, pending, error } = await useAsyncData("authStore", () => {
+	return authStore.checkToken()
+});
 
-const getAccessToken = function () {
-	console.log(authStore.accessToken);
-	
-	// if(!authStore.accessTokenComputed) {
-	// 	console.log('пустой');
-	// } else {
-	// 	console.log("токен", authStore.accessTokenComputed);
-		
-	// }
-}
-
-
-// const show = function () {
-// 	const { data } = useFetch('/api/cookies')
-// 	console.log(data);
-	
+// watch(
+//   () => authStore.user.value,
+//   async (q, prevQ) => {
+// 	console.log(q);
+// 	console.log(prevQ);
 // }
-  
-// const { data } = await useFetch('/api/cookies') 
-// console.log(data.value);
-// console.log(data.value.cookies.access_token);
+// )
 
-// const access_token = data.value.cookies.access_token
-
-// console.log(Object.entries(data));
-
-
-
+// const user = useCookie('access_token')
 
 </script>
 
 
 <template>
-	
- <h1 v-if="data">Страница пользователя с email: {{ data.email }} </h1>
- <h1 v-else> Не обновился токен</h1>
- <v-btn @click="refreshToken">
+<app-message v-if="globalStore.message" :message="globalStore.message" ></app-message>
+
+ <h1 v-if="authStore.user">Страница пользователя с email: {{ authStore.user }} </h1>
+ <h1 v-else>Войдите в систему</h1>
+ <!-- <v-btn @click="refreshToken">
      Обновить токен
     </v-btn>
 	 <v-btn @click="getAccessToken">
      Получить accessToken
-    </v-btn>
+    </v-btn> -->
+	 {{ user }}
 </template>
 
 <style></style>
