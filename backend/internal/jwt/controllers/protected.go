@@ -2,11 +2,14 @@ package controllers
 
 import (
 	db "GameSite/internal/DB"
+	"GameSite/internal/jwt/auth"
 	"GameSite/internal/jwt/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
+
 /* проверка есть ли пользователь в базе */
 func Profile(c *gin.Context) {
 
@@ -34,5 +37,36 @@ func Profile(c *gin.Context) {
 
 	user.Password = ""
 
-	c.JSON(200, user)
+	jwtWrapper := auth.JwtWrapper{
+		SecretKey:         "verysecretkey",
+		Issuer:            "AuthService",
+		ExpirationMinutes: 1,
+		ExpirationHours:   12,
+	}
+	signedToken, err := jwtWrapper.GenerateToken(user.Email)
+	if err != nil {
+		logrus.Errorf("couldn't to generate access token, err: %s", err)
+		c.JSON(500, gin.H{
+			"Error": "Error Signing Token",
+		})
+		c.Abort()
+		return
+	}
+	signedtoken, err := jwtWrapper.RefreshToken(user.Email)
+	if err != nil {
+		logrus.Errorf("couldn't to generate refresh token, err: %s", err)
+		c.JSON(500, gin.H{
+			"Error": "Error Signing Token",
+		})
+		c.Abort()
+		return
+	}
+	tokenResponse := LoginResponse{
+		Token:        signedToken,
+		RefreshToken: signedtoken,
+	}
+	c.JSON(200, gin.H{
+		"User":  user,
+        "Token": tokenResponse,
+	})
 }
