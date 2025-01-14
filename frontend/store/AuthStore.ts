@@ -2,12 +2,14 @@ import { defineStore } from "pinia"
 import { useGlobalStore } from "./index"
 import {eError} from "../utils/error"
 import { useRouter } from "vue-router"
+import { jsx } from "vue/jsx-runtime"
 const router = useRouter()
 
 
 export const useAuthStore = defineStore('authStore', () => {
 
 	const accessToken = ref({})
+	const refreshToken = ref({})
 	const user = ref()
 
 	const login = async (values) => {
@@ -17,6 +19,8 @@ export const useAuthStore = defineStore('authStore', () => {
 			body: values,
 		})
 		console.log(responce);
+		console.log(error);
+		console.log(status);
 		
 		if (status.value === "success") {
 			console.log(responce);
@@ -31,85 +35,69 @@ export const useAuthStore = defineStore('authStore', () => {
 		return responce.value
 	}
 
-	//? проверяем валидность accesstoken
+	// проверяем валидность accesstoken
 	const checkToken = async () => {
 
-		//? получаем значение аксес токена из кук
-		const {data} = await useFetch('/api/accesstoken')
-		accessToken.value = data.value?.access_token
-		console.log('аксес из запроса', accessToken.value);
-
-		if(accessToken.value === undefined) {
-			const newToken = await refreshToken() 
+		// получаем значение аксес токена из кук
+		const {data} = await useFetch('/api/tokens')
+		accessToken.value = data.value?.cookies.access_token
+		console.log(accessToken.value);
+		
+		// если в куках нет аксес токена
+		if(data.value?.cookies.access_token === undefined) {
+			console.log('отработало условие аксес токен = undefined');
+			// получаем рефреш токен из кук и помещаем в переменную 	
+			refreshToken.value = data.value?.cookies.refresh_token
+			// получаем новый аксес с пом. рефреша
+			const newToken =	await refreshTokenFunction()
+			// делаем запрос прокидывая новый аксес
 			accessToken.value = newToken
-		}
+			const {data:responce, error, status} = await useFetch('http://localhost:3001/api/protected/profile', {
+				credentials: 'include',
+				headers: accessToken.value ? {Authorization: `Bearer ${accessToken.value}` } : {},
+			})
+			user.value = responce.value.User
 
-		//? делаем запрос на сервер для получения данных
-		//? в заголовок помещаем значение аксеса из кук
+			return responce
+		} //!тут else? чтобы дважды не делать запрос? 
+
+		// если в куках есть аксес токен, то делаем запрос
+		// в заголовок помещаем значение аксеса из кук
 		const {data:responce, error, status} = await useFetch('http://localhost:3001/api/protected/profile', {
 			credentials: 'include',
 			headers: accessToken.value ? {Authorization: `Bearer ${accessToken.value}` } : {},
 		})
 		
-		console.log(responce);
-		console.log(status);
-
-		//? если запрос не прошел и вернулся статус с ошибкой
-		if (status.value === 'error') {
-			try {
-				//? обновляем аксес с помощью рефреш токена
-				const newToken = await refreshToken() 
-
-				//? получаем новый аксес токен в переменную
-				accessToken.value = newToken
-				console.log('аксес после рефреша:', accessToken.value);
-				
-				//?делаем новый запрос на сервер с обновленным аксес токеном
-				//? и получаем данные о пользователе с сервера
-				const {data:responce, error, status} = await useFetch('http://localhost:3001/api/protected/profile', {
-					credentials: 'include',
-					headers: accessToken.value ? {Authorization: `Bearer ${accessToken.value}` } : {},
-				})
-				console.log("данные после рефреша", responce.value );
-				user.value = responce.value.User.email
-
-				//?возвращаем данные
-				return responce.value.User.email
-
-			} catch (error) {
-				console.log(error);
-			}
-		} else {
-			console.log('токен действует')
-			user.value = responce.value
-		}	
+		console.log(responce.value);
+		user.value = responce.value.User
 		return responce
 	}
 
-	async function refreshToken () {
-		//? из куков получаем рефреш токен и складываем в переменную 
-		const {data: tokens} = await useFetch('/api/cookies')	
-		const refreshToken = tokens.value?.cookies.refresh_token
-		
-		//? делаем запрос на сервер, пуша в зоголовок рефреш токен
-		const {data, error, status} = await useFetch("http://localhost:3001/api/protected/profile", {
+	// функция получения нового аксес с помощью рефреш токена
+	const refreshTokenFunction = async function () {
+		// ранее полученный рефреш помещаем в заголовок запроса
+		const {data: tokens, error, status} = await useFetch("http://localhost:3001/api/protected/profile", {
 			credentials: 'include',
-			headers: refreshToken ? {Authorization: `Bearer ${refreshToken}` } : {},
+			headers: refreshToken.value ? {Authorization: `Bearer ${refreshToken.value}` } : {},
+			// headers: refreshToken ? {Authorization: `Bearer ${refreshToken}` } : {},
 		})
-		//? если рефреш токен еще актуален, то получаем новый аксес токен
-		//? и функцию выше продолжаем 
+		console.log(tokens.value.Token);
+		console.log(error);
+		console.log(status);
+		
+		
 		if (status.value === "success") {
 			console.log('токен успешно обновлен');
-			console.log(data.value.Token);
-			return data.value.Token
+			return tokens.value.Token
 		} else {
-			//? если рефреш токен еще актуален, то просим пользователя авторизоваться еще раз
-			//! допиши тут логику с редиректом
+		// если рефреш токен еще актуален, то просим пользователя авторизоваться еще раз
+		// допиши тут логику с редиректом
 			console.log("Токен не обновился")
 			console.log(error)
 			const globalStore = useGlobalStore()
 			globalStore.setMessage(eError(error.value.data.Error), 'error')		
 		}
+		return tokens.value.Token
 	}
 
 	const signup = async (values) => {
@@ -137,11 +125,18 @@ export const useAuthStore = defineStore('authStore', () => {
 	const logout = async (values) => {
 		// isAuth.value = false
 	}
+
+	const isAuth =  computed ( async () => {
+		const {data} = await useFetch('/api/tokens')
+		console.log(!!data.value?.cookies.access_token)
+		
+		return !!data.value?.cookies.access_token
+	})
 	
 	return { 
 		login, 
 		signup, 
-		// isAuth, 
+		isAuth, 
 		logout, checkToken, refreshToken, accessToken, user
 		// accessTokenComputed
 	}
