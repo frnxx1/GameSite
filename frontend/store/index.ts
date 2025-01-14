@@ -8,8 +8,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
 	const setMessage = function (textMessage, typeMessage) {
 
 		message.value = {text: textMessage, type: typeMessage}
-		console.log('данные из стора:', message.value);
-
+		
 		setTimeout(() => {
 			message.value = null
 		}, 6000);
