@@ -17,6 +17,9 @@ export const useAuthStore = defineStore('authStore', () => {
 			method: 'POST',
 			credentials: 'include',
 			body: values,
+			onResponse(){
+				console.log('запрос запрос');
+			}
 		})
 		console.log(responce);
 		console.log(error);
@@ -137,7 +140,7 @@ export const useAuthStore = defineStore('authStore', () => {
 		login, 
 		signup, 
 		isAuth, 
-		logout, checkToken, refreshToken, accessToken, user
+		logout, checkToken, refreshToken, accessToken, user, refreshTokenFunction
 		// accessTokenComputed
 	}
 
